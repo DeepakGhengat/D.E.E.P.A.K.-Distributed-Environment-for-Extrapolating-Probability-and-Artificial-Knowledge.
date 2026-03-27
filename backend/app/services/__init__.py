@@ -1,8 +1,8 @@
 """
 Business Service Module
 
-All swarm agents are organized in the AGENT/ directory at the project root.
-This module re-exports them for backward compatibility with existing backend code.
+Agents (LLM-powered autonomous reasoning) live in the AGENT/ directory.
+Utilities and infrastructure services live here in backend/app/services/.
 """
 
 import sys
@@ -13,12 +13,10 @@ _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
+# --- Agents (from AGENT/ directory) ---
 from AGENT.ontology_generator import OntologyGenerator
-from AGENT.graph_builder import GraphBuilderService
-from AGENT.text_processor import TextProcessor
-from AGENT.zep_entity_reader import ZepEntityReader, EntityNode, FilteredEntities
+from AGENT.report_agent import *
 from AGENT.oasis_profile_generator import OasisProfileGenerator, OasisAgentProfile
-from AGENT.simulation_manager import SimulationManager, SimulationState, SimulationStatus
 from AGENT.simulation_config_generator import (
     SimulationConfigGenerator,
     SimulationParameters,
@@ -27,19 +25,25 @@ from AGENT.simulation_config_generator import (
     EventConfig,
     PlatformConfig
 )
-from AGENT.simulation_runner import (
+
+# --- Utilities & Infrastructure (local services) ---
+from .graph_builder import GraphBuilderService
+from .text_processor import TextProcessor
+from .zep_entity_reader import ZepEntityReader, EntityNode, FilteredEntities
+from .simulation_manager import SimulationManager, SimulationState, SimulationStatus
+from .simulation_runner import (
     SimulationRunner,
     SimulationRunState,
     RunnerStatus,
     AgentAction,
     RoundSummary
 )
-from AGENT.zep_graph_memory_updater import (
+from .zep_graph_memory_updater import (
     ZepGraphMemoryUpdater,
     ZepGraphMemoryManager,
     AgentActivity
 )
-from AGENT.simulation_ipc import (
+from .simulation_ipc import (
     SimulationIPCClient,
     SimulationIPCServer,
     IPCCommand,
@@ -49,23 +53,25 @@ from AGENT.simulation_ipc import (
 )
 
 __all__ = [
+    # Agents
     'OntologyGenerator',
-    'GraphBuilderService',
-    'TextProcessor',
-    'ZepEntityReader',
-    'EntityNode',
-    'FilteredEntities',
     'OasisProfileGenerator',
     'OasisAgentProfile',
-    'SimulationManager',
-    'SimulationState',
-    'SimulationStatus',
     'SimulationConfigGenerator',
     'SimulationParameters',
     'AgentActivityConfig',
     'TimeSimulationConfig',
     'EventConfig',
     'PlatformConfig',
+    # Utilities & Infrastructure
+    'GraphBuilderService',
+    'TextProcessor',
+    'ZepEntityReader',
+    'EntityNode',
+    'FilteredEntities',
+    'SimulationManager',
+    'SimulationState',
+    'SimulationStatus',
     'SimulationRunner',
     'SimulationRunState',
     'RunnerStatus',
