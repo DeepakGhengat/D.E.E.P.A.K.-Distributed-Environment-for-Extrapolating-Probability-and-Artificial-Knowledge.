@@ -167,16 +167,16 @@
               <span>Parameters</span>
             </div>
 
-            <!-- 输入区域 -->
+            <!-- Input area -->
             <div class="console-section">
               <div class="console-header">
-                <span class="console-label">>_ 02 / 模拟提示词</span>
+                <span class="console-label">>_ 02 / Simulation Prompt</span>
               </div>
               <div class="input-wrapper">
                 <textarea
                   v-model="formData.simulationRequirement"
                   class="code-input"
-                  placeholder="// 用自然语言输入模拟或预测需求（例.武大若发布撤销肖某处分的公告，会引发什么舆情走向）"
+                  placeholder="// Enter your simulation or prediction request in natural language"
                   rows="6"
                   :disabled="loading"
                 ></textarea>
