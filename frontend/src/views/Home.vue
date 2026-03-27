@@ -1,35 +1,35 @@
 <template>
   <div class="home-container">
-    <!-- 顶部导航栏 -->
+    <!-- Top Navigation Bar -->
     <nav class="navbar">
       <div class="nav-brand">MIROFISH</div>
       <div class="nav-links">
         <a href="https://github.com/DeepakGhengat/D.E.E.P.A.K.-Distributed-Environment-for-Extrapolating-Probability-and-Artificial-Knowledge." target="_blank" class="github-link">
-          访问我们的Github主页 <span class="arrow">↗</span>
+          Visit our Github page <span class="arrow">↗</span>
         </a>
       </div>
     </nav>
 
     <div class="main-content">
-      <!-- 上半部分：Hero 区域 -->
+      <!-- Upper section: Hero area -->
       <section class="hero-section">
         <div class="hero-left">
           <div class="tag-row">
-            <span class="orange-tag">简洁通用的群体智能引擎</span>
-            <span class="version-text">/ v0.1-预览版</span>
+            <span class="orange-tag">Concise & Universal Swarm Intelligence Engine</span>
+            <span class="version-text">/ v0.1-preview</span>
           </div>
           
           <h1 class="main-title">
-            上传任意报告<br>
-            <span class="gradient-text">即刻推演未来</span>
+            Upload Any Report<br>
+            <span class="gradient-text">Extrapolate the Future</span>
           </h1>
           
           <div class="hero-desc">
             <p>
-              即使只有一段文字，<span class="highlight-bold">D.E.E.P.A.K.</span> 也能基于其中的现实种子，全自动生成与之对应的至多<span class="highlight-orange">百万级Agent</span>构成的平行世界。通过上帝视角注入变量，在复杂的群体交互中寻找动态环境下的<span class="highlight-code">“局部最优解”</span>
+              With just a piece of text, <span class=”highlight-bold”>D.E.E.P.A.K.</span> can automatically generate a parallel world with up to <span class=”highlight-orange”>millions of agents</span> based on real-world seeds. Inject variables from a god's-eye view to find the <span class=”highlight-code”>”local optimum”</span> in complex swarm interactions.
             </p>
             <p class="slogan-text">
-              让未来在 Agent 群中预演，让决策在百战后胜出<span class="blinking-cursor">_</span>
+              Let the future rehearse among agents, let decisions prevail after a hundred simulations<span class="blinking-cursor">_</span>
             </p>
           </div>
            
@@ -37,7 +37,7 @@
         </div>
         
         <div class="hero-right">
-          <!-- Logo 区域 -->
+          <!-- Logo area -->
           <div class="logo-container">
             <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="D.E.E.P.A.K. Logo" class="hero-logo" />
           </div>
@@ -48,63 +48,63 @@
         </div>
       </section>
 
-      <!-- 下半部分：双栏布局 -->
+      <!-- Lower section: Two-column layout -->
       <section class="dashboard-section">
-        <!-- 左栏：状态与步骤 -->
+        <!-- Left column: Status & Steps -->
         <div class="left-panel">
           <div class="panel-header">
-            <span class="status-dot">■</span> 系统状态
+            <span class="status-dot">■</span> System Status
           </div>
           
-          <h2 class="section-title">准备就绪</h2>
+          <h2 class="section-title">Ready</h2>
           <p class="section-desc">
-            预测引擎待命中，可上传多份非结构化数据以初始化模拟序列
+            Prediction engine standing by. Upload unstructured data to initialize simulation.
           </p>
           
-          <!-- 数据指标卡片 -->
+          <!-- Metric cards -->
           <div class="metrics-row">
             <div class="metric-card">
-              <div class="metric-value">低成本</div>
-              <div class="metric-label">常规模拟平均5$/次</div>
+              <div class="metric-value">Low Cost</div>
+              <div class="metric-label">Average $5 per simulation</div>
             </div>
             <div class="metric-card">
-              <div class="metric-value">高可用</div>
-              <div class="metric-label">最多百万级Agent模拟</div>
+              <div class="metric-value">High Availability</div>
+              <div class="metric-label">Up to millions of agents</div>
             </div>
           </div>
 
-          <!-- 项目模拟步骤介绍 (新增区域) -->
+          <!-- Simulation workflow steps -->
           <div class="steps-container">
             <div class="steps-header">
-               <span class="diamond-icon">◇</span> 工作流序列
+               <span class="diamond-icon">◇</span> Workflow
             </div>
             <div class="workflow-list">
               <div class="workflow-item">
                 <span class="step-num">01</span>
                 <div class="step-info">
-                  <div class="step-title">图谱构建</div>
-                  <div class="step-desc">现实种子提取 & 个体与群体记忆注入 & GraphRAG构建</div>
+                  <div class="step-title">Graph Build</div>
+                  <div class="step-desc">Seed extraction & individual/collective memory injection & GraphRAG build</div>
                 </div>
               </div>
               <div class="workflow-item">
                 <span class="step-num">02</span>
                 <div class="step-info">
-                  <div class="step-title">环境搭建</div>
-                  <div class="step-desc">实体关系抽取 & 人设生成 & 环境配置Agent注入仿真参数</div>
+                  <div class="step-title">Environment Setup</div>
+                  <div class="step-desc">Entity extraction & persona generation & config agent injects simulation parameters</div>
                 </div>
               </div>
               <div class="workflow-item">
                 <span class="step-num">03</span>
                 <div class="step-info">
-                  <div class="step-title">开始模拟</div>
-                  <div class="step-desc">双平台并行模拟 & 自动解析预测需求 & 动态更新时序记忆</div>
+                  <div class="step-title">Start Simulation</div>
+                  <div class="step-desc">Dual-platform parallel simulation & auto-parse prediction needs & dynamic memory update</div>
                 </div>
               </div>
               <div class="workflow-item">
                 <span class="step-num">04</span>
                 <div class="step-info">
-                  <div class="step-title">报告生成</div>
-                  <div class="step-desc">ReportAgent拥有丰富的工具集与模拟后环境进行深度交互</div>
+                  <div class="step-title">Report Generation</div>
+                  <div class="step-desc">ReportAgent uses rich tools to deeply interact with the post-simulation environment</div>
                 </div>
               </div>
               <div class="workflow-item">
