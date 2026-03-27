@@ -551,7 +551,7 @@ const parseInsightForge = (text) => {
   }
   
   try {
-    // 提取分析问题
+    // Extract analysis question
     const queryMatch = text.match(/分析问题:\s*(.+?)(?:\n|$)/)
     if (queryMatch) result.query = queryMatch[1].trim()
     

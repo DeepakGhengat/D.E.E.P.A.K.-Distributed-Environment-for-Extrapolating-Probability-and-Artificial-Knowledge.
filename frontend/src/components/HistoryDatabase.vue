@@ -122,9 +122,9 @@
               <button class="modal-close" @click="closeModal">×</button>
             </div>
 
-            <!-- 弹窗内容 -->
+            <!-- Modal content -->
             <div class="modal-body">
-              <!-- 模拟需求 -->
+              <!-- Simulation requirement -->
               <div class="modal-section">
                 <div class="modal-label">Simulation Requirement</div>
                 <div class="modal-requirement">{{ selectedProject.simulation_requirement || 'None' }}</div>
