@@ -276,50 +276,50 @@
                   </div>
                   <div class="platform-params">
                     <div class="param-row">
-                      <span class="param-label">时效权重</span>
+                      <span class="param-label">Recency Weight</span>
                       <span class="param-value">{{ simulationConfig.twitter_config.recency_weight }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">热度权重</span>
+                      <span class="param-label">Popularity Weight</span>
                       <span class="param-value">{{ simulationConfig.twitter_config.popularity_weight }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">相关性权重</span>
+                      <span class="param-label">Relevance Weight</span>
                       <span class="param-value">{{ simulationConfig.twitter_config.relevance_weight }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">病毒阈值</span>
+                      <span class="param-label">Viral Threshold</span>
                       <span class="param-value">{{ simulationConfig.twitter_config.viral_threshold }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">回音室强度</span>
+                      <span class="param-label">Echo Chamber Strength</span>
                       <span class="param-value">{{ simulationConfig.twitter_config.echo_chamber_strength }}</span>
                     </div>
                   </div>
                 </div>
                 <div v-if="simulationConfig.reddit_config" class="platform-card">
                   <div class="platform-card-header">
-                    <span class="platform-name">平台 2：话题 / 社区</span>
+                    <span class="platform-name">Platform 2: Topic / Community</span>
                   </div>
                   <div class="platform-params">
                     <div class="param-row">
-                      <span class="param-label">时效权重</span>
+                      <span class="param-label">Recency Weight</span>
                       <span class="param-value">{{ simulationConfig.reddit_config.recency_weight }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">热度权重</span>
+                      <span class="param-label">Popularity Weight</span>
                       <span class="param-value">{{ simulationConfig.reddit_config.popularity_weight }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">相关性权重</span>
+                      <span class="param-label">Relevance Weight</span>
                       <span class="param-value">{{ simulationConfig.reddit_config.relevance_weight }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">病毒阈值</span>
+                      <span class="param-label">Viral Threshold</span>
                       <span class="param-value">{{ simulationConfig.reddit_config.viral_threshold }}</span>
                     </div>
                     <div class="param-row">
-                      <span class="param-label">回音室强度</span>
+                      <span class="param-label">Echo Chamber Strength</span>
                       <span class="param-value">{{ simulationConfig.reddit_config.echo_chamber_strength }}</span>
                     </div>
                   </div>
@@ -327,7 +327,7 @@
               </div>
             </div>
 
-            <!-- LLM 配置推理 -->
+            <!-- LLM Config Reasoning -->
             <div v-if="simulationConfig.generation_reasoning" class="config-block">
               <div class="config-block-header">
                 <span class="config-block-title">LLM 配置推理</span>
