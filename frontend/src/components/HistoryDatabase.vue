@@ -349,7 +349,7 @@ const formatSimulationId = (simulationId) => {
   return `SIM_${prefix.toUpperCase()}`
 }
 
-// 格式化轮数显示（当前轮/总轮数）
+// Format rounds display (current round / total rounds)
 const formatRounds = (simulation) => {
   const current = simulation.current_round || 0
   const total = simulation.total_rounds || 0
@@ -357,7 +357,7 @@ const formatRounds = (simulation) => {
   return `${current}/${total} rounds`
 }
 
-// 获取文件类型（用于样式）
+// Get file type (for styling)
 const getFileType = (filename) => {
   if (!filename) return 'other'
   const ext = filename.split('.').pop()?.toLowerCase()
@@ -373,14 +373,14 @@ const getFileType = (filename) => {
   return typeMap[ext] || 'other'
 }
 
-// 获取文件类型标签文本
+// Get file type label text
 const getFileTypeLabel = (filename) => {
   if (!filename) return 'FILE'
   const ext = filename.split('.').pop()?.toUpperCase()
   return ext || 'FILE'
 }
 
-// 截断文件名（保留扩展名）
+// Truncate filename (preserve extension)
 const truncateFilename = (filename, maxLength) => {
   if (!filename) return 'Unknown file'
   if (filename.length <= maxLength) return filename
@@ -391,17 +391,17 @@ const truncateFilename = (filename, maxLength) => {
   return truncatedName + ext
 }
 
-// 打开项目详情弹窗
+// Open project detail modal
 const navigateToProject = (simulation) => {
   selectedProject.value = simulation
 }
 
-// 关闭弹窗
+// Close modal
 const closeModal = () => {
   selectedProject.value = null
 }
 
-// 导航到图谱构建页面（Project）
+// Navigate to graph construction page (Project)
 const goToProject = () => {
   if (selectedProject.value?.project_id) {
     router.push({
@@ -412,7 +412,7 @@ const goToProject = () => {
   }
 }
 
-// 导航到环境配置页面（Simulation）
+// Navigate to environment setup page (Simulation)
 const goToSimulation = () => {
   if (selectedProject.value?.simulation_id) {
     router.push({
@@ -423,7 +423,7 @@ const goToSimulation = () => {
   }
 }
 
-// 导航到分析报告页面（Report）
+// Navigate to analysis report page (Report)
 const goToReport = () => {
   if (selectedProject.value?.report_id) {
     router.push({
@@ -434,7 +434,7 @@ const goToReport = () => {
   }
 }
 
-// 加载历史项目
+// Load history projects
 const loadHistory = async () => {
   try {
     loading.value = true
@@ -450,7 +450,7 @@ const loadHistory = async () => {
   }
 }
 
-// 初始化 IntersectionObserver
+// Initialize IntersectionObserver
 const initObserver = () => {
   if (observer) {
     observer.disconnect()
@@ -461,41 +461,41 @@ const initObserver = () => {
       entries.forEach((entry) => {
         const shouldExpand = entry.isIntersecting
         
-        // 更新待执行的目标状态（无论是否在动画中都要记录最新的目标状态）
+        // Update the pending target state (always record the latest target state regardless of animation)
         pendingState = shouldExpand
         
-        // 清除之前的防抖定时器（新的滚动意图会覆盖旧的）
+        // Clear previous debounce timer (new scroll intent overrides old one)
         if (expandDebounceTimer) {
           clearTimeout(expandDebounceTimer)
           expandDebounceTimer = null
         }
         
-        // 如果正在动画中，只记录状态，等动画结束后处理
+        // If animating, only record state and handle after animation ends
         if (isAnimating) return
         
-        // 如果目标状态与当前状态相同，不需要处理
+        // If target state is the same as current state, no action needed
         if (shouldExpand === isExpanded.value) {
           pendingState = null
           return
         }
         
-        // 使用防抖延迟状态切换，防止快速闪烁
-        // 展开时延迟较短(50ms)，收起时延迟较长(200ms)以增加稳定性
+        // Use debounce to delay state switch and prevent rapid flickering
+        // Shorter delay for expanding (50ms), longer for collapsing (200ms) for stability
         const delay = shouldExpand ? 50 : 200
         
         expandDebounceTimer = setTimeout(() => {
-          // 检查是否正在动画
+          // Check if currently animating
           if (isAnimating) return
           
-          // 检查待执行状态是否仍需要执行（可能已被后续滚动覆盖）
+          // Check if pending state still needs execution (may have been overridden by subsequent scrolling)
           if (pendingState === null || pendingState === isExpanded.value) return
           
-          // 设置动画锁
+          // Set animation lock
           isAnimating = true
           isExpanded.value = pendingState
           pendingState = null
           
-          // 动画完成后解除锁定，并检查是否有待处理的状态变化
+          // Unlock after animation completes and check for pending state changes
           setTimeout(() => {
             isAnimating = false
             
