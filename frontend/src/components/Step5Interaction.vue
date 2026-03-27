@@ -904,10 +904,10 @@ const loadAgentLogs = async () => {
         }
       })
       
-      addLog('报告数据加载完成')
+      addLog('Report data loaded successfully')
     }
   } catch (err) {
-    addLog(`加载报告日志失败: ${err.message}`)
+    addLog(`Failed to load report logs: ${err.message}`)
   }
 }
 
@@ -918,10 +918,10 @@ const loadProfiles = async () => {
     const res = await getSimulationProfilesRealtime(props.simulationId, 'reddit')
     if (res.success && res.data) {
       profiles.value = res.data.profiles || []
-      addLog(`加载了 ${profiles.value.length} 个模拟个体`)
+      addLog(`Loaded ${profiles.value.length} simulated individuals`)
     }
   } catch (err) {
-    addLog(`加载模拟个体失败: ${err.message}`)
+    addLog(`Failed to load simulated individuals: ${err.message}`)
   }
 }
 
@@ -935,7 +935,7 @@ const handleClickOutside = (e) => {
 
 // Lifecycle
 onMounted(() => {
-  addLog('Step5 深度互动初始化')
+  addLog('Step5 Deep Interaction initialized')
   loadReportData()
   loadProfiles()
   document.addEventListener('click', handleClickOutside)
