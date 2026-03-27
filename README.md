@@ -1,203 +1,254 @@
 <div align="center">
 
-<img src="./static/image/MiroFish_logo_compressed.jpeg" alt="MiroFish Logo" width="75%"/>
+# D.E.E.P.A.K.
 
-<a href="https://trendshift.io/repositories/16144" target="_blank"><img src="https://trendshift.io/api/badge/repositories/16144" alt="666ghj%2FMiroFish | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+### Distributed Environment for Extrapolating Probability and Artificial Knowledge
 
-简洁通用的群体智能引擎，预测万物
-</br>
-<em>A Simple and Universal Swarm Intelligence Engine, Predicting Anything</em>
+---
 
-<a href="https://www.shanda.com/" target="_blank"><img src="./static/image/shanda_logo.png" alt="666ghj%2MiroFish | Shanda" height="40"/></a>
+**A Universal Swarm Intelligence Engine that builds parallel digital worlds,**
+**runs thousands of autonomous agents, and extrapolates the future.**
 
-[![GitHub Stars](https://img.shields.io/github/stars/666ghj/MiroFish?style=flat-square&color=DAA520)](https://github.com/666ghj/MiroFish/stargazers)
-[![GitHub Watchers](https://img.shields.io/github/watchers/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/watchers)
-[![GitHub Forks](https://img.shields.io/github/forks/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/network)
-[![Docker](https://img.shields.io/badge/Docker-Build-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/666ghj/MiroFish)
-
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](http://discord.gg/ePf5aPaHnA)
-[![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/mirofish_ai)
-[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/mirofish_ai/)
-
-[English](./README-EN.md) | [中文文档](./README.md)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=flat-square)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)]()
+[![Node.js 18+](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white)]()
+[![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D?style=flat-square&logo=vue.js&logoColor=white)]()
+[![Flask](https://img.shields.io/badge/Flask-Backend-000000?style=flat-square&logo=flask&logoColor=white)]()
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)]()
 
 </div>
 
-## ⚡ 项目概述
+---
 
-**MiroFish** 是一款基于多智能体技术的新一代 AI 预测引擎。通过提取现实世界的种子信息（如突发新闻、政策草案、金融信号），自动构建出高保真的平行数字世界。在此空间内，成千上万个具备独立人格、长期记忆与行为逻辑的智能体进行自由交互与社会演化。你可透过「上帝视角」动态注入变量，精准推演未来走向——**让未来在数字沙盘中预演，助决策在百战模拟后胜出**。
+## What is D.E.E.P.A.K.?
 
-> 你只需：上传种子材料（数据分析报告或者有趣的小说故事），并用自然语言描述预测需求</br>
-> MiroFish 将返回：一份详尽的预测报告，以及一个可深度交互的高保真数字世界
+**D.E.E.P.A.K.** is an AI-powered prediction engine built on swarm intelligence. Feed it any seed material — breaking news, policy drafts, financial signals, research papers, or even fiction — and it constructs a high-fidelity parallel digital world populated by thousands of autonomous agents, each with their own personality, memory, and behavioral logic.
 
-### 我们的愿景
+These agents interact freely, forming emergent social dynamics. You observe from a god's-eye view, inject variables in real-time, and watch the future unfold in a digital sandbox.
 
-MiroFish 致力于打造映射现实的群体智能镜像，通过捕捉个体互动引发的群体涌现，突破传统预测的局限：
+> **Input:** Upload seed material (reports, articles, stories) + describe your prediction in natural language
+>
+> **Output:** A comprehensive prediction report + a fully interactive digital world you can explore
 
-- **于宏观**：我们是决策者的预演实验室，让政策与公关在零风险中试错
-- **于微观**：我们是个人用户的创意沙盘，无论是推演小说结局还是探索脑洞，皆可有趣、好玩、触手可及
+---
 
-从严肃预测到趣味仿真，我们让每一个如果都能看见结果，让预测万物成为可能。
+## Why D.E.E.P.A.K.?
 
-## 🌐 在线体验
+Traditional prediction models treat the world as equations. D.E.E.P.A.K. treats it as what it actually is — **a complex system of interacting individuals whose collective behavior emerges from the bottom up**.
 
-欢迎访问在线 Demo 演示环境，体验我们为你准备的一次关于热点舆情事件的推演预测：[mirofish-live-demo](https://666ghj.github.io/mirofish-demo/)
+| Capability | Description |
+|-----------|-------------|
+| **Swarm Emergence** | Thousands of agents with individual personalities produce collective patterns no single model could predict |
+| **Knowledge Graphs** | Automatic entity extraction and relationship mapping via GraphRAG |
+| **Dual-Platform Simulation** | Parallel social simulation across Twitter and Reddit environments |
+| **Autonomous Agents** | LLM-powered agents that reason, plan, and act independently |
+| **ReACT Reporting** | Multi-step reasoning agent that investigates simulation results with tools |
+| **Interactive Exploration** | Chat with any agent in the simulated world post-simulation |
 
-## 📸 系统截图
+---
 
-<div align="center">
-<table>
-<tr>
-<td><img src="./static/image/Screenshot/运行截图1.png" alt="截图1" width="100%"/></td>
-<td><img src="./static/image/Screenshot/运行截图2.png" alt="截图2" width="100%"/></td>
-</tr>
-<tr>
-<td><img src="./static/image/Screenshot/运行截图3.png" alt="截图3" width="100%"/></td>
-<td><img src="./static/image/Screenshot/运行截图4.png" alt="截图4" width="100%"/></td>
-</tr>
-<tr>
-<td><img src="./static/image/Screenshot/运行截图5.png" alt="截图5" width="100%"/></td>
-<td><img src="./static/image/Screenshot/运行截图6.png" alt="截图6" width="100%"/></td>
-</tr>
-</table>
-</div>
+## Architecture
 
-## 🎬 演示视频
-
-### 1. 武汉大学舆情推演预测 + MiroFish项目讲解
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1VYBsBHEMY/" target="_blank"><img src="./static/image/武大模拟演示封面.png" alt="MiroFish Demo Video" width="75%"/></a>
-
-点击图片查看使用微舆BettaFish生成的《武大舆情报告》进行预测的完整演示视频
-</div>
-
-### 2. 《红楼梦》失传结局推演预测
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1cPk3BBExq" target="_blank"><img src="./static/image/红楼梦模拟推演封面.jpg" alt="MiroFish Demo Video" width="75%"/></a>
-
-点击图片查看基于《红楼梦》前80回数十万字，MiroFish深度预测失传结局
-</div>
-
-> **金融方向推演预测**、**时政要闻推演预测**等示例陆续更新中...
-
-## 🔄 工作流程
-
-1. **图谱构建**：现实种子提取 & 个体与群体记忆注入 & GraphRAG构建
-2. **环境搭建**：实体关系抽取 & 人设生成 & 环境配置Agent注入仿真参数
-3. **开始模拟**：双平台并行模拟 & 自动解析预测需求 & 动态更新时序记忆
-4. **报告生成**：ReportAgent拥有丰富的工具集与模拟后环境进行深度交互
-5. **深度互动**：与模拟世界中的任意一位进行对话 & 与ReportAgent进行对话
-
-## 🚀 快速开始
-
-### 一、源码部署（推荐）
-
-#### 前置要求
-
-| 工具 | 版本要求 | 说明 | 安装检查 |
-|------|---------|------|---------|
-| **Node.js** | 18+ | 前端运行环境，包含 npm | `node -v` |
-| **Python** | ≥3.11, ≤3.12 | 后端运行环境 | `python --version` |
-| **uv** | 最新版 | Python 包管理器 | `uv --version` |
-
-#### 1. 配置环境变量
-
-```bash
-# 复制示例配置文件
-cp .env.example .env
-
-# 编辑 .env 文件，填入必要的 API 密钥
+```
+D.E.E.P.A.K./
+├── AGENT/                              # Swarm Intelligence Agents (LLM-powered)
+│   ├── ontology_generator/             # Designs domain ontologies from text
+│   ├── simulation_config_generator/    # Generates simulation parameters
+│   ├── report_agent/                   # ReACT agent with tool use for analysis
+│   └── oasis_profile_generator/        # Creates autonomous agent personas
+│
+├── backend/                            # Flask API Server
+│   ├── app/
+│   │   ├── api/                        # REST endpoints (graph, simulation, report)
+│   │   ├── models/                     # Data models (project, task)
+│   │   ├── services/                   # Infrastructure & utilities
+│   │   │   ├── graph_builder.py        # Knowledge graph construction
+│   │   │   ├── simulation_runner.py    # Simulation process orchestrator
+│   │   │   ├── simulation_manager.py   # Lifecycle & state management
+│   │   │   ├── simulation_ipc.py       # Inter-process communication
+│   │   │   ├── text_processor.py       # Document chunking & processing
+│   │   │   ├── zep_entity_reader.py    # Knowledge graph data access
+│   │   │   ├── zep_graph_memory_updater.py  # Memory synchronization
+│   │   │   └── zep_tools.py            # Graph search & retrieval tools
+│   │   ├── utils/                      # LLM client, logging, retry logic
+│   │   └── config.py                   # Configuration management
+│   ├── scripts/                        # Simulation execution scripts
+│   └── run.py                          # Backend entry point
+│
+├── frontend/                           # Vue 3 + Vite SPA
+│   └── src/
+│       ├── components/                 # Step-by-step workflow UI
+│       ├── views/                      # Page views
+│       └── api/                        # API client layer
+│
+├── Dockerfile                          # Container build
+├── docker-compose.yml                  # One-command deployment
+└── .env.example                        # Environment template
 ```
 
-**必需的环境变量：**
+---
+
+## Workflow
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  1. GRAPH BUILD  │────▶│  2. ENV SETUP    │────▶│  3. SIMULATE     │
+│                 │     │                 │     │                 │
+│ Upload seed     │     │ Extract entities │     │ Dual-platform   │
+│ material        │     │ Generate agent   │     │ parallel sim    │
+│ Build knowledge │     │ personas         │     │ Dynamic memory  │
+│ graph (GraphRAG)│     │ Configure params │     │ updates         │
+└─────────────────┘     └─────────────────┘     └────────┬────────┘
+                                                         │
+┌─────────────────┐     ┌─────────────────┐              │
+│  5. INTERACT     │◀────│  4. REPORT       │◀─────────────┘
+│                 │     │                 │
+│ Chat with any   │     │ ReACT agent     │
+│ agent in the    │     │ investigates    │
+│ simulated world │     │ with tool use   │
+└─────────────────┘     └─────────────────┘
+```
+
+1. **Graph Build** — Upload documents. D.E.E.P.A.K. extracts entities, relationships, and injects them into a knowledge graph via Zep + GraphRAG.
+2. **Environment Setup** — The Ontology Generator agent designs the domain structure. The Profile Generator agent creates detailed personas. The Config Generator agent determines simulation parameters.
+3. **Simulation** — Thousands of agents run in parallel across Twitter/Reddit environments, posting, reacting, following, and debating autonomously.
+4. **Report Generation** — The Report Agent uses a ReACT loop (Reason → Act → Observe) with graph search tools to produce a deep analysis.
+5. **Interactive Exploration** — Chat directly with any agent in the post-simulation world, or query the Report Agent for further insights.
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+| Tool | Version | Purpose | Check |
+|------|---------|---------|-------|
+| **Node.js** | 18+ | Frontend runtime | `node -v` |
+| **Python** | 3.11 – 3.12 | Backend runtime | `python --version` |
+| **uv** | latest | Python package manager | `uv --version` |
+
+### 1. Clone & Configure
+
+```bash
+git clone https://github.com/DeepakGhengat/D.E.E.P.A.K.-Distributed-Environment-for-Extrapolating-Probability-and-Artificial-Knowledge..git
+cd D.E.E.P.A.K.-Distributed-Environment-for-Extrapolating-Probability-and-Artificial-Knowledge.
+
+# Copy environment template
+cp .env.example .env
+```
+
+Edit `.env` with your API keys:
 
 ```env
-# LLM API配置（支持 OpenAI SDK 格式的任意 LLM API）
-# 推荐使用阿里百炼平台qwen-plus模型：https://bailian.console.aliyun.com/
-# 注意消耗较大，可先进行小于40轮的模拟尝试
-LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-LLM_MODEL_NAME=qwen-plus
+# LLM Configuration (any OpenAI-compatible API)
+LLM_API_KEY=your_llm_api_key
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL_NAME=gpt-4o-mini
 
-# Zep Cloud 配置
-# 每月免费额度即可支撑简单使用：https://app.getzep.com/
+# Zep Cloud (knowledge graph memory)
+# Free tier available at https://app.getzep.com/
 ZEP_API_KEY=your_zep_api_key
+
+# Optional: Boost LLM (separate faster model for high-throughput tasks)
+# LLM_BOOST_API_KEY=your_boost_key
+# LLM_BOOST_BASE_URL=your_boost_url
+# LLM_BOOST_MODEL_NAME=your_boost_model
 ```
 
-#### 2. 安装依赖
+### 2. Install Dependencies
 
 ```bash
-# 一键安装所有依赖（根目录 + 前端 + 后端）
+# Install everything (Node.js + Python) in one command
 npm run setup:all
 ```
 
-或者分步安装：
+Or step by step:
 
 ```bash
-# 安装 Node 依赖（根目录 + 前端）
-npm run setup
-
-# 安装 Python 依赖（后端，自动创建虚拟环境）
-npm run setup:backend
+npm run setup           # Node.js dependencies (root + frontend)
+npm run setup:backend   # Python dependencies (auto-creates virtualenv)
 ```
 
-#### 3. 启动服务
+### 3. Run
 
 ```bash
-# 同时启动前后端（在项目根目录执行）
+# Start both frontend and backend simultaneously
 npm run dev
 ```
 
-**服务地址：**
-- 前端：`http://localhost:3000`
-- 后端 API：`http://localhost:5001`
+| Service | URL |
+|---------|-----|
+| **Frontend** | http://localhost:3000 |
+| **Backend API** | http://localhost:5001 |
 
-**单独启动：**
+Start individually:
 
 ```bash
-npm run backend   # 仅启动后端
-npm run frontend  # 仅启动前端
+npm run backend    # Backend only
+npm run frontend   # Frontend only
 ```
 
-### 二、Docker 部署
+---
+
+## Docker Deployment
 
 ```bash
-# 1. 配置环境变量（同源码部署）
+# Configure environment
 cp .env.example .env
+# Edit .env with your API keys
 
-# 2. 拉取镜像并启动
+# Build and run
 docker compose up -d
 ```
 
-默认会读取根目录下的 `.env`，并映射端口 `3000（前端）/5001（后端）`
+Ports `3000` (frontend) and `5001` (backend) are exposed by default.
 
-> 在 `docker-compose.yml` 中已通过注释提供加速镜像地址，可按需替换
+---
 
-## 📬 更多交流
+## Swarm Agents (AGENT/)
 
-<div align="center">
-<img src="./static/image/QQ群.png" alt="QQ交流群" width="60%"/>
-</div>
+The `AGENT/` directory contains only LLM-powered autonomous reasoning agents:
 
-&nbsp;
+| Agent | What It Does |
+|-------|-------------|
+| **Ontology Generator** | Analyzes documents via LLM to design domain-specific entity types and relationship structures |
+| **Simulation Config Generator** | Reasons about simulation requirements to generate time configs, activity patterns, and event schedules |
+| **Report Agent** | Multi-step ReACT agent that plans investigations, calls graph search tools, interviews entities, and produces comprehensive reports |
+| **OASIS Profile Generator** | Creates detailed agent personas with personalities, memories, and behavioral traits using LLM reasoning |
 
-MiroFish团队长期招募全职/实习，如果你对多Agent应用感兴趣，欢迎投递简历至：**mirofish@shanda.com**
+All non-agent code (graph builders, simulation runners, IPC, memory updaters) lives in `backend/app/services/`.
 
-## 📄 致谢
+---
 
-**MiroFish 得到了盛大集团的战略支持和孵化！**
+## Environment Variables
 
-MiroFish 的仿真引擎由 **[OASIS](https://github.com/camel-ai/oasis)** 驱动，我们衷心感谢 CAMEL-AI 团队的开源贡献！
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `LLM_API_KEY` | Yes | API key for your LLM provider |
+| `LLM_BASE_URL` | Yes | Base URL (OpenAI-compatible format) |
+| `LLM_MODEL_NAME` | Yes | Model name (e.g., `gpt-4o-mini`, `qwen-plus`) |
+| `ZEP_API_KEY` | Yes | Zep Cloud API key for knowledge graph memory |
+| `LLM_BOOST_API_KEY` | No | Optional separate key for high-throughput LLM tasks |
+| `LLM_BOOST_BASE_URL` | No | Optional boost model base URL |
+| `LLM_BOOST_MODEL_NAME` | No | Optional boost model name |
 
-## 📈 项目统计
+---
 
-<a href="https://www.star-history.com/#666ghj/MiroFish&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&legend=top-left" />
- </picture>
-</a>
+## Tech Stack
+
+- **Backend:** Python 3.11+ / Flask / Zep Cloud / OASIS simulation engine
+- **Frontend:** Vue 3 / Vite / D3.js (graph visualization) / Axios
+- **AI:** Any OpenAI-compatible LLM API / GraphRAG / ReACT pattern
+- **Infrastructure:** Docker / uv (Python) / npm (Node.js)
+
+---
+
+## Acknowledgments
+
+Simulation engine powered by [OASIS](https://github.com/camel-ai/oasis) from the CAMEL-AI team.
+
+---
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE)
