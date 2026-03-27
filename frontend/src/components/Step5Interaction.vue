@@ -604,12 +604,12 @@ const renderMarkdown = (content) => {
   html = html.replace(/(<\/ul>|<\/ol>|<\/blockquote>)\s*<br>/g, '$1')
   // Clean up <p><br> followed by block-level elements (caused by extra blank lines)
   html = html.replace(/<p class="md-p">(<br>\s*)+(<ul|<ol|<blockquote|<pre|<hr)/g, '$2')
-  // 清理连续的 <br> 标签
+  // Clean up consecutive <br> tags
   html = html.replace(/(<br>\s*){2,}/g, '<br>')
-  // 清理块级元素后紧跟的段落开始标签前的 <br>
+  // Clean up <br> before paragraph opening tags that immediately follow block-level elements
   html = html.replace(/(<\/ol>|<\/ul>|<\/blockquote>)<br>(<p|<div)/g, '$1$2')
 
-  // 修复非连续有序列表的编号：当单项 <ol> 被段落内容隔开时，保持编号递增
+  // Fix non-contiguous ordered list numbering: when single-item <ol> elements are separated by paragraph content, maintain incrementing numbers
   const tokens = html.split(/(<ol class="md-ol">(?:<li class="md-oli"[^>]*>[\s\S]*?<\/li>)+<\/ol>)/g)
   let olCounter = 0
   let inSequence = false
@@ -671,7 +671,7 @@ const sendMessage = async () => {
   } finally {
     isSending.value = false
     scrollToBottom()
-    // 自动保存对话记录到缓存
+    // Auto-save chat history to cache
     saveChatHistory()
   }
 }
@@ -733,17 +733,17 @@ const sendToAgent = async (message) => {
   })
   
   if (res.success && res.data) {
-    // 正确的数据路径: res.data.result.results 是一个对象字典
-    // 格式: {"twitter_0": {...}, "reddit_0": {...}} 或单平台 {"reddit_0": {...}}
+    // Correct data path: res.data.result.results is an object dictionary
+    // Format: {"twitter_0": {...}, "reddit_0": {...}} or single platform {"reddit_0": {...}}
     const resultData = res.data.result || res.data
     const resultsDict = resultData.results || resultData
-    
-    // 将对象字典转换为数组，优先获取 reddit 平台的回复
+
+    // Convert object dictionary to array, preferring reddit platform replies
     let responseContent = null
     const agentId = selectedAgentIndex.value
-    
+
     if (typeof resultsDict === 'object' && !Array.isArray(resultsDict)) {
-      // 优先使用 reddit 平台回复，其次 twitter
+      // Prefer reddit platform reply, fall back to twitter
       const redditKey = `reddit_${agentId}`
       const twitterKey = `twitter_${agentId}`
       const agentResult = resultsDict[redditKey] || resultsDict[twitterKey] || Object.values(resultsDict)[0]
@@ -751,7 +751,7 @@ const sendToAgent = async (message) => {
         responseContent = agentResult.response || agentResult.answer
       }
     } else if (Array.isArray(resultsDict) && resultsDict.length > 0) {
-      // 兼容数组格式
+      // Compatible with array format
       responseContent = resultsDict[0].response || resultsDict[0].answer
     }
     
@@ -817,19 +817,19 @@ const submitSurvey = async () => {
     })
     
     if (res.success && res.data) {
-      // 正确的数据路径: res.data.result.results 是一个对象字典
-      // 格式: {"twitter_0": {...}, "reddit_0": {...}, "twitter_1": {...}, ...}
+      // Correct data path: res.data.result.results is an object dictionary
+      // Format: {"twitter_0": {...}, "reddit_0": {...}, "twitter_1": {...}, ...}
       const resultData = res.data.result || res.data
       const resultsDict = resultData.results || resultData
       
-      // 将对象字典转换为数组格式
+      // Convert object dictionary to array format
       const surveyResultsList = []
       
       for (const interview of interviews) {
         const agentIdx = interview.agent_id
         const agent = profiles.value[agentIdx]
         
-        // 优先使用 reddit 平台回复，其次 twitter
+        // Prefer reddit platform reply, fall back to twitter
         let responseContent = 'No response'
         
         if (typeof resultsDict === 'object' && !Array.isArray(resultsDict)) {
@@ -840,7 +840,7 @@ const submitSurvey = async () => {
             responseContent = agentResult.response || agentResult.answer || 'No response'
           }
         } else if (Array.isArray(resultsDict)) {
-          // 兼容数组格式
+          // Compatible with array format
           const matchedResult = resultsDict.find(r => r.agent_id === agentIdx)
           if (matchedResult) {
             responseContent = matchedResult.response || matchedResult.answer || 'No response'
@@ -980,7 +980,7 @@ watch(() => props.simulationId, (newId) => {
   overflow: hidden;
 }
 
-/* Left Panel - Report Style (与 Step4Report.vue 完全一致) */
+/* Left Panel - Report Style (identical to Step4Report.vue) */
 .left-panel.report-style {
   width: 45%;
   min-width: 450px;
@@ -2028,7 +2028,7 @@ watch(() => props.simulationId, (newId) => {
   margin-bottom: 0;
 }
 
-/* 修复有序列表编号 - 使用 CSS 计数器让多个 ol 连续编号 */
+/* Fix ordered list numbering - use CSS counters to maintain continuous numbering across multiple ol elements */
 .message-text {
   counter-reset: list-counter;
 }
@@ -2054,7 +2054,7 @@ watch(() => props.simulationId, (newId) => {
   flex-shrink: 0;
 }
 
-/* 无序列表样式 */
+/* Unordered list styles */
 .message-text :deep(.md-ul) {
   padding-left: 20px;
   margin: 8px 0;
@@ -2533,7 +2533,7 @@ watch(() => props.simulationId, (newId) => {
   margin: 6px 0;
 }
 
-/* 聊天/问卷区域的引用样式 */
+/* Blockquote styles for chat/survey areas */
 .chat-messages :deep(.md-quote),
 .result-answer :deep(.md-quote) {
   margin: 12px 0;

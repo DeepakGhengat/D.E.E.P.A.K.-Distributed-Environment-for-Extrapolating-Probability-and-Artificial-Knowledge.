@@ -396,9 +396,9 @@ const renderGraph = () => {
     const isSelfLoop = e.source_node_uuid === e.target_node_uuid
     
     if (isSelfLoop) {
-      // 自环边 - 每个节点只添加一条合并的自环
+      // Self-loop edge - add only one merged self-loop per node
       if (processedSelfLoopNodes.has(e.source_node_uuid)) {
-        return // 已处理过，跳过
+        return // Already processed, skip
       }
       processedSelfLoopNodes.add(e.source_node_uuid)
       
@@ -417,7 +417,7 @@ const renderGraph = () => {
           source_name: nodeName,
           target_name: nodeName,
           selfLoopCount: allSelfLoops.length,
-          selfLoopEdges: allSelfLoops // 存储所有自环边的详细信息
+          selfLoopEdges: allSelfLoops // Store detailed info of all self-loop edges
         }
       })
       return
@@ -428,19 +428,19 @@ const renderGraph = () => {
     const currentIndex = edgePairIndex[pairKey] || 0
     edgePairIndex[pairKey] = currentIndex + 1
     
-    // 判断边的方向是否与标准化方向一致（源UUID < 目标UUID）
+    // Check if the edge direction matches the normalized direction (source UUID < target UUID)
     const isReversed = e.source_node_uuid > e.target_node_uuid
     
-    // 计算曲率：多条边时分散开，单条边为直线
+    // Calculate curvature: spread out when multiple edges exist, straight line for single edge
     let curvature = 0
     if (totalCount > 1) {
-      // 均匀分布曲率，确保明显区分
-      // 曲率范围根据边数量增加，边越多曲率范围越大
+      // Distribute curvature evenly, ensuring clear separation
+      // Curvature range increases with edge count; more edges means wider curvature range
       const curvatureRange = Math.min(1.2, 0.6 + totalCount * 0.15)
       curvature = ((currentIndex / (totalCount - 1)) - 0.5) * curvatureRange * 2
       
-      // 如果边的方向与标准化方向相反，翻转曲率
-      // 这样确保所有边在同一参考系下分布，不会因方向不同而重叠
+      // If the edge direction is opposite to the normalized direction, flip the curvature
+      // This ensures all edges are distributed in the same reference frame and won't overlap due to different directions
       if (isReversed) {
         curvature = -curvature
       }
@@ -468,11 +468,11 @@ const renderGraph = () => {
   entityTypes.value.forEach(t => colorMap[t.name] = t.color)
   const getColor = (type) => colorMap[type] || '#999'
 
-  // Simulation - 根据边数量动态调整节点间距
+  // Simulation - dynamically adjust node spacing based on edge count
   const simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink(edges).id(d => d.id).distance(d => {
-      // 根据这对节点之间的边数量动态调整距离
-      // 基础距离 150，每多一条边增加 40
+      // Dynamically adjust distance based on the number of edges between this pair of nodes
+      // Base distance 150, increase by 40 for each additional edge
       const baseDistance = 150
       const edgeCount = d.pairTotal || 1
       return baseDistance + (edgeCount - 1) * 50
@@ -480,7 +480,7 @@ const renderGraph = () => {
     .force('charge', d3.forceManyBody().strength(-400))
     .force('center', d3.forceCenter(width / 2, height / 2))
     .force('collide', d3.forceCollide(50))
-    // 添加向中心的引力，让独立的节点群聚集到中心区域
+    // Add gravitational pull toward center to cluster isolated node groups in the center area
     .force('x', d3.forceX(width / 2).strength(0.04))
     .force('y', d3.forceY(height / 2).strength(0.04))
   
@@ -493,39 +493,39 @@ const renderGraph = () => {
     g.attr('transform', event.transform)
   }))
 
-  // Links - 使用 path 支持曲线
+  // Links - use path to support curves
   const linkGroup = g.append('g').attr('class', 'links')
   
-  // 计算曲线路径
+  // Calculate curve path
   const getLinkPath = (d) => {
     const sx = d.source.x, sy = d.source.y
     const tx = d.target.x, ty = d.target.y
     
-    // 检测自环
+    // Detect self-loop
     if (d.isSelfLoop) {
-      // 自环：绘制一个圆弧从节点出发再返回
+      // Self-loop: draw an arc starting from the node and returning to it
       const loopRadius = 30
-      // 从节点右侧出发，绕一圈回来
-      const x1 = sx + 8  // 起点偏移
+      // Start from the right side of the node, loop around and come back
+      const x1 = sx + 8  // Start point offset
       const y1 = sy - 4
-      const x2 = sx + 8  // 终点偏移
+      const x2 = sx + 8  // End point offset
       const y2 = sy + 4
-      // 使用圆弧绘制自环（sweep-flag=1 顺时针）
+      // Draw self-loop using arc (sweep-flag=1 for clockwise)
       return `M${x1},${y1} A${loopRadius},${loopRadius} 0 1,1 ${x2},${y2}`
     }
     
     if (d.curvature === 0) {
-      // 直线
+      // Straight line
       return `M${sx},${sy} L${tx},${ty}`
     }
     
-    // 计算曲线控制点 - 根据边数量和距离动态调整
+    // Calculate curve control point - dynamically adjust based on edge count and distance
     const dx = tx - sx, dy = ty - sy
     const dist = Math.sqrt(dx * dx + dy * dy)
-    // 垂直于连线方向的偏移，根据距离比例计算，保证曲线明显可见
-    // 边越多，偏移量占距离的比例越大
+    // Offset perpendicular to the link direction, calculated as a proportion of distance to ensure curves are clearly visible
+    // More edges means a larger offset-to-distance ratio
     const pairTotal = d.pairTotal || 1
-    const offsetRatio = 0.25 + pairTotal * 0.05 // 基础25%，每多一条边增加5%
+    const offsetRatio = 0.25 + pairTotal * 0.05 // Base 25%, increase by 5% for each additional edge
     const baseOffset = Math.max(35, dist * offsetRatio)
     const offsetX = -dy / dist * d.curvature * baseOffset
     const offsetY = dx / dist * d.curvature * baseOffset
@@ -535,14 +535,14 @@ const renderGraph = () => {
     return `M${sx},${sy} Q${cx},${cy} ${tx},${ty}`
   }
   
-  // 计算曲线中点（用于标签定位）
+  // Calculate curve midpoint (for label positioning)
   const getLinkMidpoint = (d) => {
     const sx = d.source.x, sy = d.source.y
     const tx = d.target.x, ty = d.target.y
     
-    // 检测自环
+    // Detect self-loop
     if (d.isSelfLoop) {
-      // 自环标签位置：节点右侧
+      // Self-loop label position: right side of the node
       return { x: sx + 70, y: sy }
     }
     
@@ -550,7 +550,7 @@ const renderGraph = () => {
       return { x: (sx + tx) / 2, y: (sy + ty) / 2 }
     }
     
-    // 二次贝塞尔曲线的中点 t=0.5
+    // Midpoint of quadratic Bezier curve at t=0.5
     const dx = tx - sx, dy = ty - sy
     const dist = Math.sqrt(dx * dx + dy * dy)
     const pairTotal = d.pairTotal || 1

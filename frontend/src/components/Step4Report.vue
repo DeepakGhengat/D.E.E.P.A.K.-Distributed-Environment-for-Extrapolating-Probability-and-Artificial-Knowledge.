@@ -555,11 +555,11 @@ const parseInsightForge = (text) => {
     const queryMatch = text.match(/分析问题:\s*(.+?)(?:\n|$)/)
     if (queryMatch) result.query = queryMatch[1].trim()
     
-    // 提取预测场景
+    // Extract prediction scenario
     const reqMatch = text.match(/预测场景:\s*(.+?)(?:\n|$)/)
     if (reqMatch) result.simulationRequirement = reqMatch[1].trim()
     
-    // 提取统计数据 - 匹配"相关预测事实: X条"格式
+    // Extract statistics - match "相关预测事实: X条" format
     const factMatch = text.match(/相关预测事实:\s*(\d+)/)
     const entityMatch = text.match(/涉及实体:\s*(\d+)/)
     const relMatch = text.match(/关系链:\s*(\d+)/)
@@ -567,14 +567,14 @@ const parseInsightForge = (text) => {
     if (entityMatch) result.stats.entities = parseInt(entityMatch[1])
     if (relMatch) result.stats.relationships = parseInt(relMatch[1])
     
-    // 提取子问题 - 完整提取，不限制数量
+    // Extract sub-questions - extract all, no limit
     const subQSection = text.match(/### 分析的子问题\n([\s\S]*?)(?=\n###|$)/)
     if (subQSection) {
       const lines = subQSection[1].split('\n').filter(l => l.match(/^\d+\./))
       result.subQueries = lines.map(l => l.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
     }
     
-    // 提取关键事实 - 完整提取，不限制数量
+    // Extract key facts - extract all, no limit
     const factsSection = text.match(/### 【关键事实】[\s\S]*?\n([\s\S]*?)(?=\n###|$)/)
     if (factsSection) {
       const lines = factsSection[1].split('\n').filter(l => l.match(/^\d+\./))
@@ -584,16 +584,16 @@ const parseInsightForge = (text) => {
       }).filter(Boolean)
     }
     
-    // 提取核心实体 - 完整提取，包含摘要和相关事实数
+    // Extract core entities - extract all, including summary and related facts count
     const entitySection = text.match(/### 【核心实体】\n([\s\S]*?)(?=\n###|$)/)
     if (entitySection) {
       const entityText = entitySection[1]
-      // 按 "- **" 分割实体块
+      // Split entity blocks by "- **"
       const entityBlocks = entityText.split(/\n(?=- \*\*)/).filter(b => b.trim().startsWith('- **'))
       result.entities = entityBlocks.map(block => {
         const nameMatch = block.match(/^-\s*\*\*(.+?)\*\*\s*\((.+?)\)/)
-        const summaryMatch = block.match(/摘要:\s*"?(.+?)"?(?:\n|$)/)
-        const relatedMatch = block.match(/相关事实:\s*(\d+)/)
+        const summaryMatch = block.match(/摘要:\s*"?(.+?)"?(?:\n|$)/)  // matches Chinese "summary:" from backend
+        const relatedMatch = block.match(/相关事实:\s*(\d+)/)  // matches Chinese "related facts:" from backend
         return {
           name: nameMatch ? nameMatch[1].trim() : '',
           type: nameMatch ? nameMatch[2].trim() : '',
@@ -603,7 +603,7 @@ const parseInsightForge = (text) => {
       }).filter(e => e.name)
     }
     
-    // 提取关系链 - 完整提取，不限制数量
+    // Extract relation chains - extract all, no limit
     const relSection = text.match(/### 【关系链】\n([\s\S]*?)(?=\n###|$)/)
     if (relSection) {
       const lines = relSection[1].split('\n').filter(l => l.trim().startsWith('-'))
@@ -632,11 +632,11 @@ const parsePanorama = (text) => {
   }
   
   try {
-    // 提取查询
+    // Extract query
     const queryMatch = text.match(/查询:\s*(.+?)(?:\n|$)/)
     if (queryMatch) result.query = queryMatch[1].trim()
     
-    // 提取统计数据
+    // Extract statistics
     const nodesMatch = text.match(/总节点数:\s*(\d+)/)
     const edgesMatch = text.match(/总边数:\s*(\d+)/)
     const activeMatch = text.match(/当前有效事实:\s*(\d+)/)
@@ -646,18 +646,18 @@ const parsePanorama = (text) => {
     if (activeMatch) result.stats.activeFacts = parseInt(activeMatch[1])
     if (histMatch) result.stats.historicalFacts = parseInt(histMatch[1])
     
-    // 提取当前有效事实 - 完整提取，不限制数量
+    // Extract current active facts - extract all, no limit
     const activeSection = text.match(/### 【当前有效事实】[\s\S]*?\n([\s\S]*?)(?=\n###|$)/)
     if (activeSection) {
       const lines = activeSection[1].split('\n').filter(l => l.match(/^\d+\./))
       result.activeFacts = lines.map(l => {
-        // 移除编号和引号
+        // Remove numbering and quotes
         const factText = l.replace(/^\d+\.\s*/, '').replace(/^"|"$/g, '').trim()
         return factText
       }).filter(Boolean)
     }
     
-    // 提取历史/过期事实 - 完整提取，不限制数量
+    // Extract historical/expired facts - extract all, no limit
     const histSection = text.match(/### 【历史\/过期事实】[\s\S]*?\n([\s\S]*?)(?=\n###|$)/)
     if (histSection) {
       const lines = histSection[1].split('\n').filter(l => l.match(/^\d+\./))
@@ -667,7 +667,7 @@ const parsePanorama = (text) => {
       }).filter(Boolean)
     }
     
-    // 提取涉及实体 - 完整提取，不限制数量
+    // Extract involved entities - extract all, no limit
     const entitySection = text.match(/### 【涉及实体】\n([\s\S]*?)(?=\n###|$)/)
     if (entitySection) {
       const lines = entitySection[1].split('\n').filter(l => l.trim().startsWith('-'))
@@ -696,11 +696,11 @@ const parseInterview = (text) => {
   }
   
   try {
-    // 提取采访主题
+    // Extract interview topic
     const topicMatch = text.match(/\*\*采访主题:\*\*\s*(.+?)(?:\n|$)/)
     if (topicMatch) result.topic = topicMatch[1].trim()
     
-    // 提取采访人数（如 "5 / 9 位模拟Agent"）
+    // Extract interview count (e.g. "5 / 9 simulated Agents")
     const countMatch = text.match(/\*\*采访人数:\*\*\s*(\d+)\s*\/\s*(\d+)/)
     if (countMatch) {
       result.successCount = parseInt(countMatch[1])
@@ -708,13 +708,13 @@ const parseInterview = (text) => {
       result.agentCount = `${countMatch[1]} / ${countMatch[2]}`
     }
     
-    // 提取采访对象选择理由
+    // Extract interviewee selection reason
     const reasonMatch = text.match(/### 采访对象选择理由\n([\s\S]*?)(?=\n---\n|\n### 采访实录)/)
     if (reasonMatch) {
       result.selectionReason = reasonMatch[1].trim()
     }
     
-    // 解析每个人的选择理由
+    // Parse individual selection reasons
     const parseIndividualReasons = (reasonText) => {
       const reasons = {}
       if (!reasonText) return reasons
@@ -728,16 +728,16 @@ const parseInterview = (text) => {
         let name = null
         let reasonStart = null
         
-        // 格式1: 数字. **名字（index=X）**：理由
-        // 例如: 1. **校友_345（index=1）**：作为武大校友...
+        // Format 1: number. **name(index=X)**: reason
+        // e.g.: 1. **alumni_345(index=1)**: As a university alumnus...
         headerMatch = line.match(/^\d+\.\s*\*\*([^*（(]+)(?:[（(]index\s*=?\s*\d+[)）])?\*\*[：:]\s*(.*)/)
         if (headerMatch) {
           name = headerMatch[1].trim()
           reasonStart = headerMatch[2]
         }
         
-        // 格式2: - 选择名字（index X）：理由
-        // 例如: - 选择家长_601（index 0）：作为家长群体代表...
+        // Format 2: - select name(index X): reason
+        // e.g.: - select parent_601(index 0): As a representative of parents...
         if (!headerMatch) {
           headerMatch = line.match(/^-\s*选择([^（(]+)(?:[（(]index\s*=?\s*\d+[)）])?[：:]\s*(.*)/)
           if (headerMatch) {

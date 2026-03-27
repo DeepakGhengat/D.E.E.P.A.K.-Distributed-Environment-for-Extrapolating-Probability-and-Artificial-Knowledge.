@@ -143,14 +143,14 @@
               </div>
             </div>
 
-            <!-- 推演回放分割线 -->
+            <!-- Simulation replay divider -->
             <div class="modal-divider">
               <span class="divider-line"></span>
               <span class="divider-text">Simulation Replay</span>
               <span class="divider-line"></span>
             </div>
 
-            <!-- 导航按钮 -->
+            <!-- Navigation buttons -->
             <div class="modal-actions">
               <button 
                 class="modal-btn btn-project" 
@@ -179,7 +179,7 @@
                 <span class="btn-text">Analysis Report</span>
               </button>
             </div>
-            <!-- 不可回放提示 -->
+            <!-- Non-replayable hint -->
             <div class="modal-playback-hint">
               <span class="hint-text">Step3 "Start Simulation" and Step5 "Deep Interaction" must be launched during runtime and do not support historical replay</span>
             </div>
@@ -198,56 +198,56 @@ import { getSimulationHistory } from '../api/simulation'
 const router = useRouter()
 const route = useRoute()
 
-// 状态
+// State
 const projects = ref([])
 const loading = ref(true)
 const isExpanded = ref(false)
 const hoveringCard = ref(null)
 const historyContainer = ref(null)
-const selectedProject = ref(null)  // 当前选中的项目（用于弹窗）
+const selectedProject = ref(null)  // Currently selected project (for modal)
 let observer = null
-let isAnimating = false  // 动画锁，防止闪烁
-let expandDebounceTimer = null  // 防抖定时器
-let pendingState = null  // 记录待执行的目标状态
+let isAnimating = false  // Animation lock to prevent flickering
+let expandDebounceTimer = null  // Debounce timer
+let pendingState = null  // Records the pending target state
 
-// 卡片布局配置 - 调整为更宽的比例
+// Card layout configuration - adjusted for wider proportions
 const CARDS_PER_ROW = 4
 const CARD_WIDTH = 280  
 const CARD_HEIGHT = 280 
 const CARD_GAP = 24
 
-// 动态计算容器高度样式
+// Dynamically compute container height style
 const containerStyle = computed(() => {
   if (!isExpanded.value) {
-    // 折叠态：固定高度
+    // Collapsed state: fixed height
     return { minHeight: '420px' }
   }
   
-  // 展开态：根据卡片数量动态计算高度
+  // Expanded state: dynamically calculate height based on card count
   const total = projects.value.length
   if (total === 0) {
     return { minHeight: '280px' }
   }
   
   const rows = Math.ceil(total / CARDS_PER_ROW)
-  // 计算实际需要的高度：行数 * 卡片高度 + (行数-1) * 间距 + 少量底部间距
+  // Calculate required height: rows * card height + (rows-1) * gap + small bottom margin
   const expandedHeight = rows * CARD_HEIGHT + (rows - 1) * CARD_GAP + 10
   
   return { minHeight: `${expandedHeight}px` }
 })
 
-// 获取卡片样式
+// Get card style
 const getCardStyle = (index) => {
   const total = projects.value.length
   
   if (isExpanded.value) {
-    // 展开态：网格布局
+    // Expanded state: grid layout
     const transition = 'transform 700ms cubic-bezier(0.23, 1, 0.32, 1), opacity 700ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, border-color 0.3s ease'
 
     const col = index % CARDS_PER_ROW
     const row = Math.floor(index / CARDS_PER_ROW)
     
-    // 计算当前行的卡片数量，确保每行居中
+    // Calculate the number of cards in the current row to ensure centering
     const currentRowStart = row * CARDS_PER_ROW
     const currentRowCards = Math.min(CARDS_PER_ROW, total - currentRowStart)
     
@@ -257,7 +257,7 @@ const getCardStyle = (index) => {
     const colInRow = index % CARDS_PER_ROW
     const x = startX + colInRow * (CARD_WIDTH + CARD_GAP)
     
-    // 向下展开，增加与标题的间距
+    // Expand downward, increase spacing from the title
     const y = 20 + row * (CARD_HEIGHT + CARD_GAP)
 
     return {
@@ -267,14 +267,14 @@ const getCardStyle = (index) => {
       transition: transition
     }
   } else {
-    // 折叠态：扇形堆叠
+    // Collapsed state: fan-shaped stack
     const transition = 'transform 700ms cubic-bezier(0.23, 1, 0.32, 1), opacity 700ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, border-color 0.3s ease'
 
     const centerIndex = (total - 1) / 2
     const offset = index - centerIndex
     
     const x = offset * 35
-    // 调整起始位置，靠近标题但保持适当间距
+    // Adjust starting position, close to title but with proper spacing
     const y = 25 + Math.abs(offset) * 8
     const r = offset * 3
     const s = 0.95 - Math.abs(offset) * 0.05
@@ -288,19 +288,19 @@ const getCardStyle = (index) => {
   }
 }
 
-// 根据轮数进度获取样式类
+// Get style class based on round progress
 const getProgressClass = (simulation) => {
   const current = simulation.current_round || 0
   const total = simulation.total_rounds || 0
   
   if (total === 0 || current === 0) {
-    // 未开始
+    // Not started
     return 'not-started'
   } else if (current >= total) {
-    // 已完成
+    // Completed
     return 'completed'
   } else {
-    // 进行中
+    // In progress
     return 'in-progress'
   }
 }
