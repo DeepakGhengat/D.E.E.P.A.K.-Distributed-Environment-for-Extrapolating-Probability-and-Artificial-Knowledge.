@@ -110,22 +110,22 @@
               <div class="workflow-item">
                 <span class="step-num">05</span>
                 <div class="step-info">
-                  <div class="step-title">深度互动</div>
-                  <div class="step-desc">与模拟世界中的任意一位进行对话 & 与ReportAgent进行对话</div>
+                  <div class="step-title">Deep Interaction</div>
+                  <div class="step-desc">Chat with any agent in the simulated world & chat with ReportAgent</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 右栏：交互控制台 -->
+        <!-- Right column: Interactive console -->
         <div class="right-panel">
           <div class="console-box">
-            <!-- 上传区域 -->
+            <!-- Upload area -->
             <div class="console-section">
               <div class="console-header">
-                <span class="console-label">01 / 现实种子</span>
-                <span class="console-meta">支持格式: PDF, MD, TXT</span>
+                <span class="console-label">01 / Seed Material</span>
+                <span class="console-meta">Supported formats: PDF, MD, TXT</span>
               </div>
               
               <div 
@@ -148,8 +148,8 @@
                 
                 <div v-if="files.length === 0" class="upload-placeholder">
                   <div class="upload-icon">↑</div>
-                  <div class="upload-title">拖拽文件上传</div>
-                  <div class="upload-hint">或点击浏览文件系统</div>
+                  <div class="upload-title">Drag & drop to upload</div>
+                  <div class="upload-hint">or click to browse files</div>
                 </div>
                 
                 <div v-else class="file-list">
@@ -162,9 +162,9 @@
               </div>
             </div>
 
-            <!-- 分割线 -->
+            <!-- Divider -->
             <div class="console-divider">
-              <span>输入参数</span>
+              <span>Parameters</span>
             </div>
 
             <!-- 输入区域 -->
