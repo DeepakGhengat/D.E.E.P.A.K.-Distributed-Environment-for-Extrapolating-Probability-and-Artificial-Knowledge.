@@ -499,9 +499,9 @@ const initObserver = () => {
           setTimeout(() => {
             isAnimating = false
             
-            // 动画结束后，检查是否有新的待执行状态
+            // After animation ends, check if there is a new pending state
             if (pendingState !== null && pendingState !== isExpanded.value) {
-              // 延迟一小段时间再执行，避免太快切换
+              // Delay briefly before executing to avoid switching too fast
               expandDebounceTimer = setTimeout(() => {
                 if (pendingState !== null && pendingState !== isExpanded.value) {
                   isAnimating = true
@@ -518,9 +518,9 @@ const initObserver = () => {
       })
     },
     {
-      // 使用多个阈值，使检测更平滑
+      // Use multiple thresholds for smoother detection
       threshold: [0.4, 0.6, 0.8],
-      // 调整 rootMargin，视口底部向上收缩，需要滚动更多才触发展开
+      // Adjust rootMargin, shrink viewport bottom upward, requiring more scrolling to trigger expansion
       rootMargin: '0px 0px -150px 0px'
     }
   )

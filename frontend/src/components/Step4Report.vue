@@ -887,7 +887,7 @@ const parseInterview = (text) => {
       }
     })
     
-    // 提取采访摘要
+    // Extract interview summary
     const summaryMatch = text.match(/### 采访摘要与核心观点\n([\s\S]*?)$/)
     if (summaryMatch) {
       result.summary = summaryMatch[1].trim()
@@ -909,15 +909,15 @@ const parseQuickSearch = (text) => {
   }
   
   try {
-    // 提取搜索查询
+    // Extract search query
     const queryMatch = text.match(/搜索查询:\s*(.+?)(?:\n|$)/)
     if (queryMatch) result.query = queryMatch[1].trim()
     
-    // 提取结果数量
+    // Extract result count
     const countMatch = text.match(/找到\s*(\d+)\s*条/)
     if (countMatch) result.count = parseInt(countMatch[1])
     
-    // 提取相关事实 - 完整提取，不限制数量
+    // Extract related facts - extract all, no limit
     const factsSection = text.match(/### 相关事实:\n([\s\S]*)$/)
     if (factsSection) {
       const lines = factsSection[1].split('\n').filter(l => l.match(/^\d+\./))
