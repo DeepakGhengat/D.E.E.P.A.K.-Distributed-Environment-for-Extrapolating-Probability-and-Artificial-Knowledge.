@@ -1887,7 +1887,7 @@ const renderMarkdown = (content) => {
   // Process blockquotes
   html = html.replace(/^> (.+)$/gm, '<blockquote class="md-quote">$1</blockquote>')
   
-  // 处理列表 - 支持子列表
+  // Process lists - support nested lists
   html = html.replace(/^(\s*)- (.+)$/gm, (match, indent, text) => {
     const level = Math.floor(indent.length / 2)
     return `<li class="md-li" data-level="${level}">${text}</li>`
@@ -1897,12 +1897,12 @@ const renderMarkdown = (content) => {
     return `<li class="md-oli" data-level="${level}">${text}</li>`
   })
 
-  // 包装无序列表
+  // Wrap unordered lists
   html = html.replace(/(<li class="md-li"[^>]*>.*?<\/li>\s*)+/g, '<ul class="md-ul">$&</ul>')
-  // 包装有序列表
+  // Wrap ordered lists
   html = html.replace(/(<li class="md-oli"[^>]*>.*?<\/li>\s*)+/g, '<ol class="md-ol">$&</ol>')
 
-  // 清理列表项之间的所有空白
+  // Clean all whitespace between list items
   html = html.replace(/<\/li>\s+<li/g, '</li><li')
   // 清理列表开始标签后的空白
   html = html.replace(/<ul class="md-ul">\s+/g, '<ul class="md-ul">')
