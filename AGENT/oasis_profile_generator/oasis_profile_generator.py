@@ -15,12 +15,16 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
+import sys
+import os
 import anthropic
 from zep_cloud.client import Zep
 
-from ..config import Config
-from ..utils.logger import get_logger
-from .zep_entity_reader import EntityNode, ZepEntityReader
+# Add backend to path so we can import app modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+from app.config import Config
+from app.utils.logger import get_logger
+from app.services.zep_entity_reader import EntityNode, ZepEntityReader
 
 logger = get_logger('deepak.oasis_profile')
 

@@ -4,8 +4,13 @@
 """
 
 import json
+import sys
+import os
 from typing import Dict, Any, List, Optional
-from ..utils.llm_client import LLMClient
+
+# Add backend to path so we can import app modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+from app.utils.llm_client import LLMClient
 
 
 # 本体生成的系统提示词

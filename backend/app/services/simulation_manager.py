@@ -14,9 +14,15 @@ from enum import Enum
 
 from ..config import Config
 from ..utils.logger import get_logger
+import sys as _sys
+import os as _os
+_project_root = _os.path.abspath(_os.path.join(_os.path.dirname(__file__), '..', '..', '..'))
+if _project_root not in _sys.path:
+    _sys.path.insert(0, _project_root)
+
 from .zep_entity_reader import ZepEntityReader, FilteredEntities
-from .oasis_profile_generator import OasisProfileGenerator, OasisAgentProfile
-from .simulation_config_generator import SimulationConfigGenerator, SimulationParameters
+from AGENT.oasis_profile_generator import OasisProfileGenerator, OasisAgentProfile
+from AGENT.simulation_config_generator import SimulationConfigGenerator, SimulationParameters
 
 logger = get_logger('deepak.simulation')
 

@@ -18,13 +18,18 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
-from ..config import Config
-from ..utils.llm_client import LLMClient
-from ..utils.logger import get_logger
-from .zep_tools import (
-    ZepToolsService, 
-    SearchResult, 
-    InsightForgeResult, 
+import sys
+_backend_path = os.path.join(os.path.dirname(__file__), '..', '..', 'backend')
+if _backend_path not in sys.path:
+    sys.path.insert(0, _backend_path)
+
+from app.config import Config
+from app.utils.llm_client import LLMClient
+from app.utils.logger import get_logger
+from app.services.zep_tools import (
+    ZepToolsService,
+    SearchResult,
+    InsightForgeResult,
     PanoramaResult,
     InterviewResult
 )
