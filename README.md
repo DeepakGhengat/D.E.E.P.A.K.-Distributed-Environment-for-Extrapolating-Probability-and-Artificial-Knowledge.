@@ -234,6 +234,69 @@ All agents in the `AGENT/` directory are powered by Claude:
 
 ---
 
+## How Claude API is Used
+
+D.E.E.P.A.K. integrates the Anthropic Claude API at two levels:
+
+### 1. Direct Anthropic SDK (`anthropic` Python package)
+
+Used by the core AGENT modules and backend LLM client for:
+- **Ontology generation** — Claude analyzes documents and designs domain ontologies
+- **Profile generation** — Claude creates detailed agent personas with unique personalities
+- **Simulation config** — Claude reasons about optimal simulation parameters
+- **Report generation** — Claude runs multi-step ReACT investigations with tool use
+- **All backend LLM calls** — The unified `LLMClient` class wraps `anthropic.Anthropic`
+
+```python
+# How D.E.E.P.A.K. calls Claude (backend/app/utils/llm_client.py)
+import anthropic
+
+client = anthropic.Anthropic(api_key="sk-ant-...")
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    system="You are a domain ontology expert...",
+    messages=[{"role": "user", "content": "Analyze this document..."}],
+    max_tokens=4096,
+    temperature=0.7,
+)
+```
+
+### 2. CAMEL-AI Framework (native Anthropic support)
+
+The OASIS simulation engine runs on [CAMEL-AI](https://github.com/camel-ai/camel), which has **native `ModelPlatformType.ANTHROPIC` support**. Simulation agents use Claude directly through CAMEL's model factory:
+
+```python
+# How simulations use Claude (backend/scripts/)
+from camel.models import ModelFactory
+from camel.types import ModelPlatformType
+from camel.configs import AnthropicConfig
+
+model = ModelFactory.create(
+    model_platform=ModelPlatformType.ANTHROPIC,
+    model_type="claude-sonnet-4-20250514",
+    model_config_dict=AnthropicConfig().as_dict(),
+)
+```
+
+### API Key Flow
+
+```
+.env (ANTHROPIC_API_KEY)
+    │
+    ├── backend/app/config.py ──► LLMClient (anthropic SDK)
+    │                                ├── Ontology Generator Agent
+    │                                ├── Simulation Config Agent
+    │                                ├── Report Agent (ReACT)
+    │                                └── Profile Generator Agent
+    │
+    └── backend/scripts/ ──► CAMEL ModelFactory (ModelPlatformType.ANTHROPIC)
+                                 ├── Twitter Simulation Agents
+                                 ├── Reddit Simulation Agents
+                                 └── Parallel Simulation Agents
+```
+
+---
+
 ## Environment Variables
 
 | Variable | Required | Description |
@@ -241,15 +304,33 @@ All agents in the `AGENT/` directory are powered by Claude:
 | `ANTHROPIC_API_KEY` | Yes | Your Anthropic API key from [console.anthropic.com](https://console.anthropic.com/) |
 | `CLAUDE_MODEL_NAME` | No | Claude model to use (default: `claude-sonnet-4-20250514`) |
 | `ZEP_API_KEY` | Yes | Zep Cloud API key for knowledge graph memory |
+| `ANTHROPIC_BOOST_API_KEY` | No | Secondary Anthropic key for parallel simulation throughput |
+| `CLAUDE_BOOST_MODEL_NAME` | No | Model for boost config (e.g., `claude-haiku-4-5-20251001` for speed) |
 
 ---
 
 ## Tech Stack
 
 - **AI Engine:** Anthropic Claude (Sonnet 4 / Opus 4 / Haiku 4.5) via `anthropic` Python SDK
-- **Backend:** Python 3.11+ / Flask / Zep Cloud / OASIS simulation engine
+- **Simulation:** CAMEL-AI + OASIS with native `ModelPlatformType.ANTHROPIC` integration
+- **Backend:** Python 3.11+ / Flask / Zep Cloud
 - **Frontend:** Vue 3 / Vite / D3.js (graph visualization) / Axios
 - **Infrastructure:** Docker / uv (Python) / npm (Node.js)
+
+---
+
+## Getting Your Anthropic API Key
+
+1. Go to [console.anthropic.com](https://console.anthropic.com/)
+2. Sign up or log in
+3. Navigate to **API Keys** in the dashboard
+4. Click **Create Key** and copy the key (starts with `sk-ant-`)
+5. Paste it into your `.env` file as `ANTHROPIC_API_KEY=sk-ant-...`
+
+Claude API pricing is pay-per-token. For typical simulations:
+- **Haiku 4.5** — most cost-effective for large agent swarms
+- **Sonnet 4** — recommended default, balances quality and cost
+- **Opus 4** — maximum reasoning power for complex scenarios
 
 ---
 

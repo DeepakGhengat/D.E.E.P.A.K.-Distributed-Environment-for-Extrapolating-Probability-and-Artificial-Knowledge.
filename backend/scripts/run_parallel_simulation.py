@@ -159,7 +159,8 @@ from action_logger import SimulationLogManager, PlatformActionLogger
 
 try:
     from camel.models import ModelFactory
-    from camel.types import ModelPlatformType
+    from camel.types import ModelPlatformType, ModelType
+    from camel.configs import AnthropicConfig
     import oasis
     from oasis import (
         ActionType,
@@ -995,41 +996,37 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
         config: 模拟配置字典
         use_boost: 是否使用加速 LLM 配置（如果可用）
     """
-    # 检查是否有加速配置
+    # Check for boost (secondary) Anthropic config
     boost_api_key = os.environ.get("ANTHROPIC_BOOST_API_KEY", "")
     boost_model = os.environ.get("CLAUDE_BOOST_MODEL_NAME", "")
     has_boost_config = bool(boost_api_key)
 
-    # 根据参数和配置情况选择使用哪个 LLM
+    # Select primary or boost Claude config
     if use_boost and has_boost_config:
-        # 使用加速配置
         llm_api_key = boost_api_key
-        llm_base_url = ""  # Anthropic does not require a base URL
-        llm_model = boost_model or os.environ.get("CLAUDE_MODEL_NAME", "")
-        config_label = "[加速LLM]"
+        llm_model = boost_model or os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
+        config_label = "[Boost Claude]"
     else:
-        # 使用通用配置
         llm_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-        llm_base_url = ""  # Anthropic does not require a base URL
-        llm_model = os.environ.get("CLAUDE_MODEL_NAME", "")
-        config_label = "[通用LLM]"
+        llm_model = os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
+        config_label = "[Primary Claude]"
 
-    # 如果 .env 中没有模型名，则使用 config 作为备用
+    # Fallback to config if model not set
     if not llm_model:
-        llm_model = config.get("llm_model", "gpt-4o-mini")
+        llm_model = config.get("llm_model", "claude-sonnet-4-20250514")
 
-    # 设置 camel-ai 所需的环境变量
-    if llm_api_key:
-        os.environ["OPENAI_API_KEY"] = llm_api_key
-
-    if not os.environ.get("OPENAI_API_KEY"):
+    if not llm_api_key:
         raise ValueError("Missing API Key. Please set ANTHROPIC_API_KEY in the .env file at the project root.")
+
+    # Set ANTHROPIC_API_KEY for camel-ai framework
+    os.environ["ANTHROPIC_API_KEY"] = llm_api_key
 
     print(f"{config_label} model={llm_model}...")
 
     return ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
+        model_platform=ModelPlatformType.ANTHROPIC,
         model_type=llm_model,
+        model_config_dict=AnthropicConfig().as_dict(),
     )
 
 

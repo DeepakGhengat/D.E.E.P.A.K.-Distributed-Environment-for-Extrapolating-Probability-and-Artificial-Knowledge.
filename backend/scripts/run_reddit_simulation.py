@@ -117,7 +117,8 @@ def setup_oasis_logging(log_dir: str):
 
 try:
     from camel.models import ModelFactory
-    from camel.types import ModelPlatformType
+    from camel.types import ModelPlatformType, ModelType
+    from camel.configs import AnthropicConfig
     import oasis
     from oasis import (
         ActionType,
@@ -439,27 +440,26 @@ class RedditSimulationRunner:
         - ANTHROPIC_API_KEY: API密钥
         - CLAUDE_MODEL_NAME: 模型名称
         """
-        # 优先从 .env 读取配置
+        # Read Anthropic API key and Claude model from .env
         llm_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-        llm_base_url = ""  # Anthropic does not require a base URL
-        llm_model = os.environ.get("CLAUDE_MODEL_NAME", "")
+        llm_model = os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
 
-        # 如果 .env 中没有，则使用 config 作为备用
+        # Fallback to config if not set
         if not llm_model:
-            llm_model = self.config.get("llm_model", "gpt-4o-mini")
+            llm_model = self.config.get("llm_model", "claude-sonnet-4-20250514")
 
-        # 设置 camel-ai 所需的环境变量
-        if llm_api_key:
-            os.environ["OPENAI_API_KEY"] = llm_api_key
-
-        if not os.environ.get("OPENAI_API_KEY"):
+        if not llm_api_key:
             raise ValueError("Missing API Key. Please set ANTHROPIC_API_KEY in the .env file at the project root.")
 
-        print(f"LLM配置: model={llm_model}...")
+        # Set ANTHROPIC_API_KEY for camel-ai framework
+        os.environ["ANTHROPIC_API_KEY"] = llm_api_key
+
+        print(f"Claude config: model={llm_model}...")
 
         return ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
+            model_platform=ModelPlatformType.ANTHROPIC,
             model_type=llm_model,
+            model_config_dict=AnthropicConfig().as_dict(),
         )
     
     def _get_active_agents_for_round(
