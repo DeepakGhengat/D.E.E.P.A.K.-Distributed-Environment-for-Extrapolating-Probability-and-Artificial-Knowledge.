@@ -525,13 +525,13 @@ const initObserver = () => {
     }
   )
   
-  // 开始观察
+  // Start observing
   if (historyContainer.value) {
     observer.observe(historyContainer.value)
   }
 }
 
-// 监听路由变化，当返回首页时重新加载数据
+// Watch route changes, reload data when returning to home page
 watch(() => route.path, (newPath) => {
   if (newPath === '/') {
     loadHistory()
@@ -539,28 +539,28 @@ watch(() => route.path, (newPath) => {
 })
 
 onMounted(async () => {
-  // 确保 DOM 渲染完成后再加载数据
+  // Ensure DOM rendering is complete before loading data
   await nextTick()
   await loadHistory()
   
-  // 等待 DOM 渲染后初始化观察器
+  // Initialize observer after DOM rendering
   setTimeout(() => {
     initObserver()
   }, 100)
 })
 
-// 如果使用 keep-alive，在组件激活时重新加载数据
+// If using keep-alive, reload data when component is activated
 onActivated(() => {
   loadHistory()
 })
 
 onUnmounted(() => {
-  // 清理 Intersection Observer
+  // Clean up Intersection Observer
   if (observer) {
     observer.disconnect()
     observer = null
   }
-  // 清理防抖定时器
+  // Clean up debounce timer
   if (expandDebounceTimer) {
     clearTimeout(expandDebounceTimer)
     expandDebounceTimer = null
@@ -569,7 +569,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 容器 */
+/* Container */
 .history-database {
   position: relative;
   width: 100%;
@@ -579,13 +579,13 @@ onUnmounted(() => {
   overflow: visible;
 }
 
-/* 无项目时简化显示 */
+/* Simplified display when no projects */
 .history-database.no-projects {
   min-height: auto;
   padding: 40px 0 20px;
 }
 
-/* 技术网格背景 */
+/* Tech grid background */
 .tech-grid-bg {
   position: absolute;
   top: 0;
@@ -596,7 +596,7 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-/* 使用CSS背景图案创建固定间距的正方形网格 */
+/* Create fixed-spacing square grid using CSS background patterns */
 .grid-pattern {
   position: absolute;
   top: 0;
@@ -607,7 +607,7 @@ onUnmounted(() => {
     linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 50px 50px;
-  /* 从左上角开始定位，高度变化时只在底部扩展，不影响已有网格位置 */
+  /* Position from top-left, height changes only expand at the bottom without affecting existing grid positions */
   background-position: top left;
 }
 
@@ -623,7 +623,7 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-/* 标题区域 */
+/* Title area */
 .section-header {
   position: relative;
   z-index: 100;
@@ -651,7 +651,7 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-/* 卡片容器 */
+/* Card container */
 .cards-container {
   position: relative;
   display: flex;
@@ -659,10 +659,10 @@ onUnmounted(() => {
   align-items: flex-start;
   padding: 0 40px;
   transition: min-height 700ms cubic-bezier(0.23, 1, 0.32, 1);
-  /* min-height 由 JS 动态计算，根据卡片数量自适应 */
+  /* min-height is dynamically calculated by JS based on card count */
 }
 
-/* 项目卡片 */
+/* Project card */
 .project-card {
   position: absolute;
   width: 280px;
@@ -685,7 +685,7 @@ onUnmounted(() => {
   z-index: 1000 !important;
 }
 
-/* 卡片头部 */
+/* Card header */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -703,7 +703,7 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 功能状态图标组 */
+/* Feature status icon group */
 .card-status-icons {
   display: flex;
   align-items: center;
@@ -720,17 +720,17 @@ onUnmounted(() => {
   opacity: 1;
 }
 
-/* 不同功能的颜色 */
-.status-icon:nth-child(1).available { color: #3B82F6; } /* 图谱构建 - 蓝色 */
-.status-icon:nth-child(2).available { color: #F59E0B; } /* 环境搭建 - 橙色 */
-.status-icon:nth-child(3).available { color: #10B981; } /* 分析报告 - 绿色 */
+/* Colors for different features */
+.status-icon:nth-child(1).available { color: #3B82F6; } /* Graph Construction - blue */
+.status-icon:nth-child(2).available { color: #F59E0B; } /* Environment Setup - orange */
+.status-icon:nth-child(3).available { color: #10B981; } /* Analysis Report - green */
 
 .status-icon.unavailable {
   color: #D1D5DB;
   opacity: 0.5;
 }
 
-/* 轮数进度显示 */
+/* Round progress display */
 .card-progress {
   display: flex;
   align-items: center;
@@ -744,13 +744,13 @@ onUnmounted(() => {
   font-size: 0.5rem;
 }
 
-/* 进度状态颜色 */
-.card-progress.completed { color: #10B981; }    /* 已完成 - 绿色 */
-.card-progress.in-progress { color: #F59E0B; }  /* 进行中 - 橙色 */
-.card-progress.not-started { color: #9CA3AF; }  /* 未开始 - 灰色 */
+/* Progress status colors */
+.card-progress.completed { color: #10B981; }    /* Completed - green */
+.card-progress.in-progress { color: #F59E0B; }  /* In progress - orange */
+.card-progress.not-started { color: #9CA3AF; }  /* Not started - gray */
 .card-status.pending { color: #9CA3AF; }
 
-/* 文件列表区域 */
+/* File list area */
 .card-files-wrapper {
   position: relative;
   width: 100%;
@@ -770,7 +770,7 @@ onUnmounted(() => {
   gap: 4px;
 }
 
-/* 更多文件提示 */
+/* More files hint */
 .files-more {
   display: flex;
   align-items: center;
@@ -800,7 +800,7 @@ onUnmounted(() => {
   border-color: #e5e7eb;
 }
 
-/* 简约文件标签样式 */
+/* Minimalist file tag style */
 .file-tag {
   display: inline-flex;
   align-items: center;
@@ -818,7 +818,7 @@ onUnmounted(() => {
   min-width: 28px;
 }
 
-/* 低饱和度配色方案 - Morandi色系 */
+/* Low saturation color scheme - Morandi palette */
 .file-tag.pdf { background: #f2e6e6; color: #a65a5a; }
 .file-tag.doc { background: #e6eff5; color: #5a7ea6; }
 .file-tag.xls { background: #e6f2e8; color: #5aa668; }
@@ -839,7 +839,7 @@ onUnmounted(() => {
   letter-spacing: 0.1px;
 }
 
-/* 无文件时的占位 */
+/* Placeholder when no files */
 .files-empty {
   display: flex;
   align-items: center;
@@ -860,13 +860,13 @@ onUnmounted(() => {
   letter-spacing: 0.5px;
 }
 
-/* 悬停时文件区域效果 */
+/* File area effect on hover */
 .project-card:hover .card-files-wrapper {
   border-color: #d1d5db;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
-/* 角落装饰 */
+/* Corner decoration */
 .corner-mark.top-left-only {
   position: absolute;
   top: 6px;
@@ -879,7 +879,7 @@ onUnmounted(() => {
   z-index: 10;
 }
 
-/* 卡片标题 */
+/* Card title */
 .card-title {
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 0.9rem;
@@ -897,7 +897,7 @@ onUnmounted(() => {
   color: #2563EB;
 }
 
-/* 卡片描述 */
+/* Card description */
 .card-desc {
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
@@ -911,7 +911,7 @@ onUnmounted(() => {
   -webkit-box-orient: vertical;
 }
 
-/* 卡片底部 */
+/* Card footer */
 .card-footer {
   position: relative;
   display: flex;
@@ -925,14 +925,14 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 日期时间组合 */
+/* Date and time combination */
 .card-datetime {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* 底部轮数进度显示 */
+/* Footer round progress display */
 .card-footer .card-progress {
   display: flex;
   align-items: center;
@@ -946,12 +946,12 @@ onUnmounted(() => {
   font-size: 0.5rem;
 }
 
-/* 进度状态颜色 - 底部 */
+/* Progress status colors - footer */
 .card-footer .card-progress.completed { color: #10B981; }
 .card-footer .card-progress.in-progress { color: #F59E0B; }
 .card-footer .card-progress.not-started { color: #9CA3AF; }
 
-/* 底部装饰线 */
+/* Bottom decoration line */
 .card-bottom-line {
   position: absolute;
   bottom: 0;
@@ -967,7 +967,7 @@ onUnmounted(() => {
   width: 100%;
 }
 
-/* 空状态 */
+/* Empty state */
 .empty-state, .loading-state {
   display: flex;
   flex-direction: column;
@@ -995,7 +995,7 @@ onUnmounted(() => {
   to { transform: rotate(360deg); }
 }
 
-/* 响应式 */
+/* Responsive */
 @media (max-width: 1200px) {
   .project-card {
     width: 240px;
@@ -1011,7 +1011,7 @@ onUnmounted(() => {
   }
 }
 
-/* ===== 历史回放详情弹窗样式 ===== */
+/* ===== History replay detail modal styles ===== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1037,7 +1037,7 @@ onUnmounted(() => {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-/* 动画过渡 */
+/* Animation transitions */
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.3s ease;
@@ -1066,7 +1066,7 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* 弹窗头部 */
+/* Modal header */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -1133,7 +1133,7 @@ onUnmounted(() => {
   color: #111827;
 }
 
-/* 弹窗内容 */
+/* Modal content */
 .modal-body {
   padding: 24px 32px;
 }
@@ -1175,7 +1175,7 @@ onUnmounted(() => {
   padding-right: 4px;
 }
 
-/* 自定义滚动条样式 */
+/* Custom scrollbar styles */
 .modal-files::-webkit-scrollbar {
   width: 4px;
 }
@@ -1229,7 +1229,7 @@ onUnmounted(() => {
   text-align: center;
 }
 
-/* 推演回放分割线 */
+/* Simulation replay divider */
 .modal-divider {
   display: flex;
   align-items: center;
@@ -1253,7 +1253,7 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-/* 导航按钮 */
+/* Navigation buttons */
 .modal-actions {
   display: flex;
   gap: 16px;
@@ -1320,7 +1320,7 @@ onUnmounted(() => {
   color: #111827;
 }
 
-/* 不可回放提示 */
+/* Non-replayable hint */
 .modal-playback-hint {
   display: flex;
   align-items: center;
