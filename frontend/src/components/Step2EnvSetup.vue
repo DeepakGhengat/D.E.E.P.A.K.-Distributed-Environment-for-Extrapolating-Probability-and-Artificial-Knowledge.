@@ -949,7 +949,7 @@ const fetchProfilesRealtime = async () => {
   }
 }
 
-// 配置轮询
+// Config polling
 const startConfigPolling = () => {
   configTimer = setInterval(fetchConfigRealtime, 2000)
 }
@@ -970,11 +970,11 @@ const fetchConfigRealtime = async () => {
     if (res.success && res.data) {
       const data = res.data
       
-      // 输出配置生成阶段日志（避免重复）
+      // Output config generation stage logs (avoid duplicates)
       if (data.generation_stage && data.generation_stage !== lastLoggedConfigStage) {
         lastLoggedConfigStage = data.generation_stage
         if (data.generation_stage === 'generating_profiles') {
-          addLog('正在生成Agent人设配置...')
+          addLog('Generating agent persona config...')
         } else if (data.generation_stage === 'generating_config') {
           addLog('正在调用LLM生成模拟配置参数...')
         }

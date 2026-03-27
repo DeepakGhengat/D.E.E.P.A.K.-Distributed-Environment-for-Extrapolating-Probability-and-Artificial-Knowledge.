@@ -287,12 +287,12 @@ const refreshGraph = () => {
 }
 
 onMounted(async () => {
-  addLog('SimulationView 初始化')
-  
-  // 检查并关闭正在运行的模拟（用户从 Step 3 返回时）
+  addLog('SimulationView initialized')
+
+  // Check and close running simulation (when user returns from Step 3)
   await checkAndStopRunningSimulation()
   
-  // 加载模拟数据
+  // Load simulation data
   loadSimulationData()
 })
 </script>
