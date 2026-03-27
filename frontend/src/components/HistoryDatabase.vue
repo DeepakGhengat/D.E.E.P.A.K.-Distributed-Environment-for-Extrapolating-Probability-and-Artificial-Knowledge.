@@ -305,7 +305,7 @@ const getProgressClass = (simulation) => {
   }
 }
 
-// 格式化日期（只显示日期部分）
+// Format date (show date part only)
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
   try {
@@ -316,7 +316,7 @@ const formatDate = (dateStr) => {
   }
 }
 
-// 格式化时间（显示时:分）
+// Format time (show hours:minutes)
 const formatTime = (dateStr) => {
   if (!dateStr) return ''
   try {
@@ -329,20 +329,20 @@ const formatTime = (dateStr) => {
   }
 }
 
-// 截断文本
+// Truncate text
 const truncateText = (text, maxLength) => {
   if (!text) return ''
   return text.length > maxLength ? text.slice(0, maxLength) + '...' : text
 }
 
-// 从模拟需求生成标题（取前20字）
+// Generate title from simulation requirement (first 20 characters)
 const getSimulationTitle = (requirement) => {
   if (!requirement) return 'Unnamed Simulation'
   const title = requirement.slice(0, 20)
   return requirement.length > 20 ? title + '...' : title
 }
 
-// 格式化 simulation_id 显示（截取前6位）
+// Format simulation_id display (first 6 characters)
 const formatSimulationId = (simulationId) => {
   if (!simulationId) return 'SIM_UNKNOWN'
   const prefix = simulationId.replace('sim_', '').slice(0, 6)

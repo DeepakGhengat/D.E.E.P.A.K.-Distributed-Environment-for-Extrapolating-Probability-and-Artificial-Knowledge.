@@ -739,15 +739,15 @@ const parseInterview = (text) => {
         // Format 2: - select name(index X): reason
         // e.g.: - select parent_601(index 0): As a representative of parents...
         if (!headerMatch) {
-          headerMatch = line.match(/^-\s*选择([^（(]+)(?:[（(]index\s*=?\s*\d+[)）])?[：:]\s*(.*)/)
+          headerMatch = line.match(/^-\s*选择([^（(]+)(?:[（(]index\s*=?\s*\d+[)）])?[：:]\s*(.*)/)  // matches Chinese "select" prefix from backend
           if (headerMatch) {
             name = headerMatch[1].trim()
             reasonStart = headerMatch[2]
           }
         }
         
-        // 格式3: - **名字（index X）**：理由
-        // 例如: - **家长_601（index 0）**：作为家长群体代表...
+        // Format 3: - **name(index X)**: reason
+        // e.g.: - **parent_601(index 0)**: As a representative of parents...
         if (!headerMatch) {
           headerMatch = line.match(/^-\s*\*\*([^*（(]+)(?:[（(]index\s*=?\s*\d+[)）])?\*\*[：:]\s*(.*)/)
           if (headerMatch) {
@@ -757,11 +757,11 @@ const parseInterview = (text) => {
         }
         
         if (name) {
-          // 保存上一个人的理由
+          // Save the previous person's reason
           if (currentName && currentReason.length > 0) {
             reasons[currentName] = currentReason.join(' ').trim()
           }
-          // 开始新的人
+          // Start a new person
           currentName = name
           currentReason = reasonStart ? [reasonStart.trim()] : []
         } else if (currentName && line.trim() && !line.match(/^未选|^综上|^最终选择/)) {
