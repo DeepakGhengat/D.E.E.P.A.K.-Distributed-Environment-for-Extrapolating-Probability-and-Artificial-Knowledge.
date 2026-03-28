@@ -289,17 +289,17 @@ class IPCHandler:
                 "interviews_count": len(results),
                 "results": results
             })
-            print(f"  批量Interview完成: {len(results)} 个Agent")
+            print(f"  Batch Interview completed: {len(results)} Agents")
             return True
             
         except Exception as e:
             error_msg = str(e)
-            print(f"  批量Interview失败: {error_msg}")
+            print(f"  Batch Interview failed: {error_msg}")
             self.send_response(command_id, "failed", error=error_msg)
             return False
     
     def _get_interview_result(self, agent_id: int) -> Dict[str, Any]:
-        """从数据库获取最新的Interview结果"""
+        """Get the latest Interview result from the database"""
         db_path = os.path.join(self.simulation_dir, "reddit_simulation.db")
         
         result = {
@@ -315,7 +315,7 @@ class IPCHandler:
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
             
-            # 查询最新的Interview记录
+            # Query the latest Interview record
             cursor.execute("""
                 SELECT user_id, info, created_at
                 FROM trace
@@ -337,7 +337,7 @@ class IPCHandler:
             conn.close()
             
         except Exception as e:
-            print(f"  读取Interview结果失败: {e}")
+            print(f"  Failed to read Interview result: {e}")
         
         return result
     
