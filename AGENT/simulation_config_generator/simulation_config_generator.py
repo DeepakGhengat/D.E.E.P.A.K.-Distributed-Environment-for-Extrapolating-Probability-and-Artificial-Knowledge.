@@ -427,12 +427,12 @@ class SimulationConfigGenerator:
                 summary_preview = (e.summary[:summary_len] + "...") if len(e.summary) > summary_len else e.summary
                 lines.append(f"- {e.name}: {summary_preview}")
             if len(type_entities) > display_count:
-                lines.append(f"  ... 还有 {len(type_entities) - display_count} 个")
+                lines.append(f"  ... {len(type_entities) - display_count} more")
         
         return "\n".join(lines)
     
     def _call_llm_with_retry(self, prompt: str, system_prompt: str) -> Dict[str, Any]:
-        """带重试的LLM调用，包含JSON修复逻辑"""
+        """LLM call with retry, including JSON repair logic"""
         import re
         
         max_attempts = 3
@@ -453,18 +453,18 @@ class SimulationConfigGenerator:
                 content = response.content[0].text
                 finish_reason = response.stop_reason
 
-                # 检查是否被截断
+                # Check if truncated
                 if finish_reason == 'max_tokens':
-                    logger.warning(f"LLM输出被截断 (attempt {attempt+1})")
+                    logger.warning(f"LLM output truncated (attempt {attempt+1})")
                     content = self._fix_truncated_json(content)
-                
-                # 尝试解析JSON
+
+                # Try to parse JSON
                 try:
                     return json.loads(content)
                 except json.JSONDecodeError as e:
-                    logger.warning(f"JSON解析失败 (attempt {attempt+1}): {str(e)[:80]}")
-                    
-                    # 尝试修复JSON
+                    logger.warning(f"JSON parse failed (attempt {attempt+1}): {str(e)[:80]}")
+
+                    # Try to fix JSON
                     fixed = self._try_fix_config_json(content)
                     if fixed:
                         return fixed
@@ -472,12 +472,12 @@ class SimulationConfigGenerator:
                     last_error = e
                     
             except Exception as e:
-                logger.warning(f"LLM调用失败 (attempt {attempt+1}): {str(e)[:80]}")
+                logger.warning(f"LLM call failed (attempt {attempt+1}): {str(e)[:80]}")
                 last_error = e
                 import time
                 time.sleep(2 * (attempt + 1))
-        
-        raise last_error or Exception("LLM调用失败")
+
+        raise last_error or Exception("LLM call failed")
     
     def _fix_truncated_json(self, content: str) -> str:
         """修复被截断的JSON"""
