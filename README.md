@@ -148,28 +148,31 @@ cd D.E.E.P.A.K.-Distributed-Environment-for-Extrapolating-Probability-and-Artifi
 cp .env.example .env
 ```
 
-Edit `.env` with your keys:
+Edit `.env` with your keys (choose **one** LLM provider):
 
+**Option A: Anthropic API (direct, recommended)**
 ```env
-# Anthropic Claude API Key
-# Get yours at https://console.anthropic.com/
 ANTHROPIC_API_KEY=sk-ant-...
-
-# Claude model (see model options below)
 CLAUDE_MODEL_NAME=claude-sonnet-4-20250514
-
-# Zep Cloud (knowledge graph memory)
-# Free tier at https://app.getzep.com/
 ZEP_API_KEY=your_zep_api_key
 ```
 
+**Option B: OpenRouter (access Claude + other models)**
+```env
+OPENROUTER_API_KEY=sk-or-...
+CLAUDE_MODEL_NAME=anthropic/claude-sonnet-4-20250514
+ZEP_API_KEY=your_zep_api_key
+```
+
+> If both keys are set, Anthropic takes priority. OpenRouter is a great fallback if you don't have a direct Anthropic API key.
+
 #### Choosing a Claude Model
 
-| Model | Speed | Intelligence | Cost | Use Case |
-|-------|-------|-------------|------|----------|
-| `claude-sonnet-4-20250514` | Fast | High | Medium | Default — best balance for most simulations |
-| `claude-opus-4-20250514` | Moderate | Highest | Higher | Complex scenarios needing maximum reasoning |
-| `claude-haiku-4-5-20251001` | Fastest | Good | Lowest | Large swarms, rapid prototyping, cost-sensitive |
+| Model | Anthropic ID | OpenRouter ID | Best For |
+|-------|-------------|---------------|----------|
+| **Sonnet 4** | `claude-sonnet-4-20250514` | `anthropic/claude-sonnet-4-20250514` | Default — balanced speed + intelligence |
+| **Opus 4** | `claude-opus-4-20250514` | `anthropic/claude-opus-4-20250514` | Maximum reasoning for complex scenarios |
+| **Haiku 4.5** | `claude-haiku-4-5-20251001` | `anthropic/claude-haiku-4-5-20251001` | Fastest, most cost-effective |
 
 ### 2. Install Dependencies
 
@@ -236,63 +239,55 @@ All agents in the `AGENT/` directory are powered by Claude:
 
 ## How Claude API is Used
 
-D.E.E.P.A.K. integrates the Anthropic Claude API at two levels:
+D.E.E.P.A.K. supports two providers to access Claude models. The system auto-detects which to use based on your `.env` configuration.
 
-### 1. Direct Anthropic SDK (`anthropic` Python package)
+### Provider 1: Anthropic API (Direct)
 
-Used by the core AGENT modules and backend LLM client for:
-- **Ontology generation** — Claude analyzes documents and designs domain ontologies
-- **Profile generation** — Claude creates detailed agent personas with unique personalities
-- **Simulation config** — Claude reasons about optimal simulation parameters
-- **Report generation** — Claude runs multi-step ReACT investigations with tool use
-- **All backend LLM calls** — The unified `LLMClient` class wraps `anthropic.Anthropic`
+Native Anthropic SDK — best performance, lowest latency.
 
 ```python
-# How D.E.E.P.A.K. calls Claude (backend/app/utils/llm_client.py)
+# backend/app/utils/llm_client.py (auto-selected when ANTHROPIC_API_KEY is set)
 import anthropic
-
 client = anthropic.Anthropic(api_key="sk-ant-...")
 response = client.messages.create(
     model="claude-sonnet-4-20250514",
     system="You are a domain ontology expert...",
     messages=[{"role": "user", "content": "Analyze this document..."}],
     max_tokens=4096,
-    temperature=0.7,
 )
 ```
 
-### 2. CAMEL-AI Framework (native Anthropic support)
+### Provider 2: OpenRouter
 
-The OASIS simulation engine runs on [CAMEL-AI](https://github.com/camel-ai/camel), which has **native `ModelPlatformType.ANTHROPIC` support**. Simulation agents use Claude directly through CAMEL's model factory:
+OpenAI-compatible API — access Claude + hundreds of other models through a single key.
 
 ```python
-# How simulations use Claude (backend/scripts/)
-from camel.models import ModelFactory
-from camel.types import ModelPlatformType
-from camel.configs import AnthropicConfig
-
-model = ModelFactory.create(
-    model_platform=ModelPlatformType.ANTHROPIC,
-    model_type="claude-sonnet-4-20250514",
-    model_config_dict=AnthropicConfig().as_dict(),
+# backend/app/utils/llm_client.py (auto-selected when OPENROUTER_API_KEY is set)
+from openai import OpenAI
+client = OpenAI(api_key="sk-or-...", base_url="https://openrouter.ai/api/v1")
+response = client.chat.completions.create(
+    model="anthropic/claude-sonnet-4-20250514",
+    messages=[...],
 )
 ```
+
+### Simulation Engine (CAMEL-AI)
+
+The OASIS simulation engine uses CAMEL-AI, which supports both providers:
+- **Anthropic** → `ModelPlatformType.ANTHROPIC` (native)
+- **OpenRouter** → `ModelPlatformType.OPENAI` with OpenRouter base URL
 
 ### API Key Flow
 
 ```
-.env (ANTHROPIC_API_KEY)
-    │
-    ├── backend/app/config.py ──► LLMClient (anthropic SDK)
-    │                                ├── Ontology Generator Agent
-    │                                ├── Simulation Config Agent
-    │                                ├── Report Agent (ReACT)
-    │                                └── Profile Generator Agent
-    │
-    └── backend/scripts/ ──► CAMEL ModelFactory (ModelPlatformType.ANTHROPIC)
-                                 ├── Twitter Simulation Agents
-                                 ├── Reddit Simulation Agents
-                                 └── Parallel Simulation Agents
+.env
+ ├── ANTHROPIC_API_KEY ──► anthropic SDK (priority)
+ │    ├── LLMClient ──► AGENT modules (ontology, config, report, profile)
+ │    └── CAMEL ModelFactory ──► Simulation agents (Twitter/Reddit)
+ │
+ └── OPENROUTER_API_KEY ──► openai SDK + OpenRouter base URL (fallback)
+      ├── LLMClient ──► AGENT modules
+      └── CAMEL ModelFactory ──► Simulation agents
 ```
 
 ---
@@ -301,36 +296,40 @@ model = ModelFactory.create(
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes | Your Anthropic API key from [console.anthropic.com](https://console.anthropic.com/) |
+| `ANTHROPIC_API_KEY` | One of these | Direct Anthropic API key ([console.anthropic.com](https://console.anthropic.com/)) |
+| `OPENROUTER_API_KEY` | is required | OpenRouter API key ([openrouter.ai/keys](https://openrouter.ai/keys)) |
+| `OPENROUTER_BASE_URL` | No | OpenRouter base URL (default: `https://openrouter.ai/api/v1`) |
 | `CLAUDE_MODEL_NAME` | No | Claude model to use (default: `claude-sonnet-4-20250514`) |
 | `ZEP_API_KEY` | Yes | Zep Cloud API key for knowledge graph memory |
-| `ANTHROPIC_BOOST_API_KEY` | No | Secondary Anthropic key for parallel simulation throughput |
-| `CLAUDE_BOOST_MODEL_NAME` | No | Model for boost config (e.g., `claude-haiku-4-5-20251001` for speed) |
+| `ANTHROPIC_BOOST_API_KEY` | No | Secondary key for parallel simulation throughput |
+| `CLAUDE_BOOST_MODEL_NAME` | No | Model for boost config (e.g., `claude-haiku-4-5-20251001`) |
 
 ---
 
 ## Tech Stack
 
-- **AI Engine:** Anthropic Claude (Sonnet 4 / Opus 4 / Haiku 4.5) via `anthropic` Python SDK
-- **Simulation:** CAMEL-AI + OASIS with native `ModelPlatformType.ANTHROPIC` integration
+- **AI Engine:** Claude (Sonnet 4 / Opus 4 / Haiku 4.5) via Anthropic SDK or OpenRouter
+- **Simulation:** CAMEL-AI + OASIS with Anthropic/OpenRouter auto-detection
 - **Backend:** Python 3.11+ / Flask / Zep Cloud
 - **Frontend:** Vue 3 / Vite / D3.js (graph visualization) / Axios
 - **Infrastructure:** Docker / uv (Python) / npm (Node.js)
 
 ---
 
-## Getting Your Anthropic API Key
+## Getting Your API Key
 
+### Option A: Anthropic (Recommended)
 1. Go to [console.anthropic.com](https://console.anthropic.com/)
-2. Sign up or log in
-3. Navigate to **API Keys** in the dashboard
-4. Click **Create Key** and copy the key (starts with `sk-ant-`)
-5. Paste it into your `.env` file as `ANTHROPIC_API_KEY=sk-ant-...`
+2. Sign up or log in → **API Keys** → **Create Key**
+3. Copy the key (starts with `sk-ant-`) into `.env` as `ANTHROPIC_API_KEY=sk-ant-...`
 
-Claude API pricing is pay-per-token. For typical simulations:
-- **Haiku 4.5** — most cost-effective for large agent swarms
-- **Sonnet 4** — recommended default, balances quality and cost
-- **Opus 4** — maximum reasoning power for complex scenarios
+### Option B: OpenRouter
+1. Go to [openrouter.ai/keys](https://openrouter.ai/keys)
+2. Sign up or log in → **Create Key**
+3. Copy the key (starts with `sk-or-`) into `.env` as `OPENROUTER_API_KEY=sk-or-...`
+4. Use `anthropic/claude-sonnet-4-20250514` as the model name
+
+OpenRouter gives you access to Claude plus hundreds of other models through a single API key, and offers free credits for new accounts.
 
 ---
 

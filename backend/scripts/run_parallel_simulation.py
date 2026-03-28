@@ -996,38 +996,56 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
         config: Simulation configuration dictionary
         use_boost: Whether to use boost LLM configuration (if available)
     """
-    # Check for boost (secondary) Anthropic config
+    # Check for boost config
     boost_api_key = os.environ.get("ANTHROPIC_BOOST_API_KEY", "")
     boost_model = os.environ.get("CLAUDE_BOOST_MODEL_NAME", "")
     has_boost_config = bool(boost_api_key)
 
-    # Select primary or boost Claude config
+    # Select primary or boost config
     if use_boost and has_boost_config:
         llm_api_key = boost_api_key
         llm_model = boost_model or os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
-        config_label = "[Boost Claude]"
+        config_label = "[Boost]"
     else:
-        llm_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        # Try Anthropic first, then OpenRouter
+        llm_api_key = os.environ.get("ANTHROPIC_API_KEY", "") or os.environ.get("OPENROUTER_API_KEY", "")
         llm_model = os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
-        config_label = "[Primary Claude]"
+        config_label = "[Primary]"
 
-    # Fallback to config if model not set
     if not llm_model:
         llm_model = config.get("llm_model", "claude-sonnet-4-20250514")
 
     if not llm_api_key:
-        raise ValueError("Missing API Key. Please set ANTHROPIC_API_KEY in the .env file at the project root.")
+        raise ValueError("No LLM API key. Set ANTHROPIC_API_KEY or OPENROUTER_API_KEY in .env")
 
-    # Set ANTHROPIC_API_KEY for camel-ai framework
-    os.environ["ANTHROPIC_API_KEY"] = llm_api_key
-
-    print(f"{config_label} model={llm_model}...")
-
-    return ModelFactory.create(
-        model_platform=ModelPlatformType.ANTHROPIC,
-        model_type=llm_model,
-        model_config_dict=AnthropicConfig().as_dict(),
-    )
+    # Determine provider: Anthropic direct or OpenRouter
+    anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if anthropic_key and (not use_boost or not has_boost_config):
+        os.environ["ANTHROPIC_API_KEY"] = llm_api_key
+        print(f"{config_label} Claude (Anthropic): model={llm_model}...")
+        return ModelFactory.create(
+            model_platform=ModelPlatformType.ANTHROPIC,
+            model_type=llm_model,
+            model_config_dict=AnthropicConfig().as_dict(),
+        )
+    elif os.environ.get("OPENROUTER_API_KEY", ""):
+        os.environ["OPENAI_API_KEY"] = llm_api_key
+        openrouter_base = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+        print(f"{config_label} Claude (OpenRouter): model={llm_model}...")
+        return ModelFactory.create(
+            model_platform=ModelPlatformType.OPENAI,
+            model_type=llm_model,
+            api_params={"api_base": openrouter_base},
+        )
+    else:
+        # Boost key with Anthropic
+        os.environ["ANTHROPIC_API_KEY"] = llm_api_key
+        print(f"{config_label} Claude (Anthropic): model={llm_model}...")
+        return ModelFactory.create(
+            model_platform=ModelPlatformType.ANTHROPIC,
+            model_type=llm_model,
+            model_config_dict=AnthropicConfig().as_dict(),
+        )
 
 
 def get_active_agents_for_round(

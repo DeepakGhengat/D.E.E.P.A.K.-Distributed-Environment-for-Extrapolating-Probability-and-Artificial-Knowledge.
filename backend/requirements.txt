@@ -9,9 +9,11 @@
 flask>=3.0.0
 flask-cors>=6.0.0
 
-# ============= Anthropic Claude =============
-# Claude API SDK for all LLM interactions
+# ============= LLM Providers =============
+# Anthropic Claude (direct API)
 anthropic>=0.52.0
+# OpenAI SDK (used for OpenRouter integration)
+openai>=1.0.0
 
 # ============= Zep Cloud =============
 zep-cloud==3.13.0

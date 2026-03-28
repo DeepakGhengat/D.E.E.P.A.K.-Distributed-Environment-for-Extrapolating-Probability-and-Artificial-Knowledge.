@@ -17,7 +17,6 @@ from datetime import datetime
 
 import sys
 import os
-import anthropic
 from zep_cloud.client import Zep
 
 # Add backend to path so we can import app modules
@@ -190,11 +189,17 @@ class OasisProfileGenerator:
     ):
         self.api_key = api_key or Config.LLM_API_KEY
         self.model_name = model_name or Config.LLM_MODEL_NAME
+        self.provider = Config.LLM_PROVIDER
 
         if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY is not configured")
+            raise ValueError("No LLM API key configured. Set ANTHROPIC_API_KEY or OPENROUTER_API_KEY")
 
-        self.client = anthropic.Anthropic(api_key=self.api_key)
+        if self.provider == 'openrouter':
+            from openai import OpenAI
+            self.client = OpenAI(api_key=self.api_key, base_url=Config.OPENROUTER_BASE_URL)
+        else:
+            import anthropic
+            self.client = anthropic.Anthropic(api_key=self.api_key)
         
         # Zep client for retrieving rich context
         self.zep_api_key = zep_api_key or Config.ZEP_API_KEY
@@ -525,21 +530,36 @@ class OasisProfileGenerator:
         
         for attempt in range(max_attempts):
             try:
-                response = self.client.messages.create(
-                    model=self.model_name,
-                    system=self._get_system_prompt(is_individual) + "\n\nYou must respond with valid JSON only.",
-                    messages=[
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=4096,
-                    temperature=0.7 - (attempt * 0.1)  # Lower temperature on each retry
-                )
+                temp = 0.7 - (attempt * 0.1)
+                sys_prompt = self._get_system_prompt(is_individual) + "\n\nYou must respond with valid JSON only."
 
-                content = response.content[0].text
+                if self.provider == 'openrouter':
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=[
+                            {"role": "system", "content": sys_prompt},
+                            {"role": "user", "content": prompt}
+                        ],
+                        response_format={"type": "json_object"},
+                        temperature=temp,
+                    )
+                    content = response.choices[0].message.content
+                    truncated = (response.choices[0].finish_reason == 'length')
+                else:
+                    response = self.client.messages.create(
+                        model=self.model_name,
+                        system=sys_prompt,
+                        messages=[
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=4096,
+                        temperature=temp,
+                    )
+                    content = response.content[0].text
+                    truncated = (response.stop_reason == 'max_tokens')
 
-                # Check if truncated (stop_reason is not 'end_turn')
-                stop_reason = response.stop_reason
-                if stop_reason == 'max_tokens':
+                # Check if truncated
+                if truncated:
                     logger.warning(f"LLM output truncated (attempt {attempt+1}), attempting fix...")
                     content = self._fix_truncated_json(content)
                 

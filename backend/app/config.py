@@ -25,9 +25,18 @@ class Config:
     DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     JSON_AS_ASCII = False
 
-    # Anthropic Claude Configuration
-    LLM_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
+    # LLM Provider: "anthropic" (direct Claude API) or "openrouter" (OpenRouter)
+    # Auto-detected from which API key is set. Anthropic takes priority.
+    ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
+    OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+
+    # Determine active provider
+    LLM_PROVIDER = 'anthropic' if ANTHROPIC_API_KEY else ('openrouter' if OPENROUTER_API_KEY else None)
+    LLM_API_KEY = ANTHROPIC_API_KEY or OPENROUTER_API_KEY
     LLM_MODEL_NAME = os.environ.get('CLAUDE_MODEL_NAME', 'claude-sonnet-4-20250514')
+
+    # OpenRouter base URL
+    OPENROUTER_BASE_URL = os.environ.get('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1')
 
     # Zep Cloud (knowledge graph memory)
     ZEP_API_KEY = os.environ.get('ZEP_API_KEY')
@@ -65,7 +74,7 @@ class Config:
         """Validate required configuration"""
         errors = []
         if not cls.LLM_API_KEY:
-            errors.append("ANTHROPIC_API_KEY is not configured")
+            errors.append("No LLM API key configured. Set ANTHROPIC_API_KEY or OPENROUTER_API_KEY")
         if not cls.ZEP_API_KEY:
             errors.append("ZEP_API_KEY is not configured")
         return errors

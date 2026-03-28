@@ -13,8 +13,9 @@ dependencies = [
     "flask>=3.0.0",
     "flask-cors>=6.0.0",
 
-    # Anthropic Claude
+    # LLM Providers
     "anthropic>=0.52.0",
+    "openai>=1.0.0",
 
     # Zep Cloud
     "zep-cloud==3.13.0",

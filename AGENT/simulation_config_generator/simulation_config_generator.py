@@ -18,8 +18,6 @@ from datetime import datetime
 
 import sys
 import os
-import anthropic
-
 # Add backend to path so we can import app modules
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
 from app.config import Config
@@ -232,13 +230,17 @@ class SimulationConfigGenerator:
     ):
         self.api_key = api_key or Config.LLM_API_KEY
         self.model_name = model_name or Config.LLM_MODEL_NAME
+        self.provider = Config.LLM_PROVIDER
 
         if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY is not configured")
+            raise ValueError("No LLM API key configured. Set ANTHROPIC_API_KEY or OPENROUTER_API_KEY")
 
-        self.client = anthropic.Anthropic(
-            api_key=self.api_key
-        )
+        if self.provider == 'openrouter':
+            from openai import OpenAI
+            self.client = OpenAI(api_key=self.api_key, base_url=Config.OPENROUTER_BASE_URL)
+        else:
+            import anthropic
+            self.client = anthropic.Anthropic(api_key=self.api_key)
     
     def generate_config(
         self,
@@ -440,21 +442,36 @@ class SimulationConfigGenerator:
         
         for attempt in range(max_attempts):
             try:
-                response = self.client.messages.create(
-                    model=self.model_name,
-                    system=system_prompt + "\n\nYou must respond with valid JSON only.",
-                    messages=[
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=4096,
-                    temperature=0.7 - (attempt * 0.1)  # Lower temperature on each retry
-                )
-
-                content = response.content[0].text
-                finish_reason = response.stop_reason
+                temp = 0.7 - (attempt * 0.1)
+                if self.provider == 'openrouter':
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=[
+                            {"role": "system", "content": system_prompt + "\n\nYou must respond with valid JSON only."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        response_format={"type": "json_object"},
+                        temperature=temp,
+                    )
+                    content = response.choices[0].message.content
+                    finish_reason = response.choices[0].finish_reason
+                    truncated = (finish_reason == 'length')
+                else:
+                    response = self.client.messages.create(
+                        model=self.model_name,
+                        system=system_prompt + "\n\nYou must respond with valid JSON only.",
+                        messages=[
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=4096,
+                        temperature=temp,
+                    )
+                    content = response.content[0].text
+                    finish_reason = response.stop_reason
+                    truncated = (finish_reason == 'max_tokens')
 
                 # Check if truncated
-                if finish_reason == 'max_tokens':
+                if truncated:
                     logger.warning(f"LLM output truncated (attempt {attempt+1})")
                     content = self._fix_truncated_json(content)
 

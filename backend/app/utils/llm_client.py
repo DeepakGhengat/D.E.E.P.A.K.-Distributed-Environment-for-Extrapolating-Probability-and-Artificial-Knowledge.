@@ -1,32 +1,47 @@
 """
-LLM Client - Anthropic Claude Integration
-Unified client for Claude model interactions via the Anthropic SDK.
+LLM Client - Claude via Anthropic API or OpenRouter
+Supports two providers:
+  1. Anthropic (direct) - native SDK, best performance
+  2. OpenRouter - OpenAI-compatible API, access Claude + other models
 """
 
 import json
 import re
 from typing import Optional, Dict, Any, List
 
-import anthropic
-
 from ..config import Config
 
 
 class LLMClient:
-    """Claude LLM Client powered by Anthropic API"""
+    """Claude LLM Client - auto-selects Anthropic or OpenRouter based on config"""
 
     def __init__(
         self,
         api_key: Optional[str] = None,
-        model: Optional[str] = None
+        model: Optional[str] = None,
+        provider: Optional[str] = None
     ):
         self.api_key = api_key or Config.LLM_API_KEY
         self.model = model or Config.LLM_MODEL_NAME
+        self.provider = provider or Config.LLM_PROVIDER
 
         if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY is not configured")
+            raise ValueError(
+                "No LLM API key configured. "
+                "Set ANTHROPIC_API_KEY or OPENROUTER_API_KEY in your .env file"
+            )
 
-        self.client = anthropic.Anthropic(api_key=self.api_key)
+        if self.provider == 'anthropic':
+            import anthropic
+            self.client = anthropic.Anthropic(api_key=self.api_key)
+        elif self.provider == 'openrouter':
+            from openai import OpenAI
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url=Config.OPENROUTER_BASE_URL
+            )
+        else:
+            raise ValueError(f"Unknown LLM provider: {self.provider}")
 
     def chat(
         self,
@@ -36,7 +51,7 @@ class LLMClient:
         response_format: Optional[Dict] = None
     ) -> str:
         """
-        Send a chat request to Claude.
+        Send a chat request to Claude (via Anthropic or OpenRouter).
 
         Args:
             messages: List of message dicts with 'role' and 'content' keys.
@@ -48,7 +63,13 @@ class LLMClient:
         Returns:
             Model response text
         """
-        # Extract system message if present
+        if self.provider == 'anthropic':
+            return self._chat_anthropic(messages, temperature, max_tokens, response_format)
+        else:
+            return self._chat_openrouter(messages, temperature, max_tokens, response_format)
+
+    def _chat_anthropic(self, messages, temperature, max_tokens, response_format):
+        """Send request via native Anthropic SDK"""
         system_text = None
         chat_messages = []
         for msg in messages:
@@ -57,13 +78,9 @@ class LLMClient:
             else:
                 chat_messages.append(msg)
 
-        # If JSON format requested, add instruction to system prompt
         if response_format and response_format.get("type") == "json_object":
             json_instruction = "You must respond with valid JSON only. No markdown, no explanation, just the JSON object."
-            if system_text:
-                system_text = f"{system_text}\n\n{json_instruction}"
-            else:
-                system_text = json_instruction
+            system_text = f"{system_text}\n\n{json_instruction}" if system_text else json_instruction
 
         kwargs = {
             "model": self.model,
@@ -71,13 +88,27 @@ class LLMClient:
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
-
         if system_text:
             kwargs["system"] = system_text
 
         response = self.client.messages.create(**kwargs)
         content = response.content[0].text
-        # Clean up any thinking tags from extended thinking models
+        content = re.sub(r'<think>[\s\S]*?</think>', '', content).strip()
+        return content
+
+    def _chat_openrouter(self, messages, temperature, max_tokens, response_format):
+        """Send request via OpenRouter (OpenAI-compatible API)"""
+        kwargs = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+        if response_format:
+            kwargs["response_format"] = response_format
+
+        response = self.client.chat.completions.create(**kwargs)
+        content = response.choices[0].message.content
         content = re.sub(r'<think>[\s\S]*?</think>', '', content).strip()
         return content
 
@@ -104,7 +135,6 @@ class LLMClient:
             max_tokens=max_tokens,
             response_format={"type": "json_object"}
         )
-        # Clean markdown code block markers
         cleaned_response = response.strip()
         cleaned_response = re.sub(r'^```(?:json)?\s*\n?', '', cleaned_response, flags=re.IGNORECASE)
         cleaned_response = re.sub(r'\n?```\s*$', '', cleaned_response)
@@ -113,4 +143,4 @@ class LLMClient:
         try:
             return json.loads(cleaned_response)
         except json.JSONDecodeError:
-            raise ValueError(f"Claude returned invalid JSON: {cleaned_response}")
+            raise ValueError(f"LLM returned invalid JSON: {cleaned_response}")

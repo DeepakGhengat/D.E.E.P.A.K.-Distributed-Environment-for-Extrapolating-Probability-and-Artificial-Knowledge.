@@ -41,7 +41,7 @@ def main():
     debug = Config.DEBUG
 
     print(f"D.E.E.P.A.K. backend starting on {host}:{port}")
-    print(f"Claude model: {Config.LLM_MODEL_NAME}")
+    print(f"LLM provider: {Config.LLM_PROVIDER} | Model: {Config.LLM_MODEL_NAME}")
     app.run(host=host, port=port, debug=debug, threaded=True)
 
 

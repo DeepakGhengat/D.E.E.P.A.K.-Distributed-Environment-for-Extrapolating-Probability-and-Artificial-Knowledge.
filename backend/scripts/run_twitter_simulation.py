@@ -429,31 +429,34 @@ class TwitterSimulationRunner:
         """
         Create LLM model.
 
-        Uses configuration from project root .env file (highest priority):
-        - ANTHROPIC_API_KEY: API key
-        - CLAUDE_MODEL_NAME: Model name
+        Supports Anthropic (direct) or OpenRouter. Auto-detected from env vars.
         """
-        # Read Anthropic API key and Claude model from .env
-        llm_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
         llm_model = os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
 
-        # Fallback to config if not set
         if not llm_model:
             llm_model = self.config.get("llm_model", "claude-sonnet-4-20250514")
 
-        if not llm_api_key:
-            raise ValueError("Missing API Key. Please set ANTHROPIC_API_KEY in the .env file at the project root.")
-
-        # Set ANTHROPIC_API_KEY for camel-ai framework
-        os.environ["ANTHROPIC_API_KEY"] = llm_api_key
-
-        print(f"Claude config: model={llm_model}...")
-
-        return ModelFactory.create(
-            model_platform=ModelPlatformType.ANTHROPIC,
-            model_type=llm_model,
-            model_config_dict=AnthropicConfig().as_dict(),
-        )
+        if anthropic_key:
+            os.environ["ANTHROPIC_API_KEY"] = anthropic_key
+            print(f"Claude (Anthropic) config: model={llm_model}...")
+            return ModelFactory.create(
+                model_platform=ModelPlatformType.ANTHROPIC,
+                model_type=llm_model,
+                model_config_dict=AnthropicConfig().as_dict(),
+            )
+        elif openrouter_key:
+            os.environ["OPENAI_API_KEY"] = openrouter_key
+            openrouter_base = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+            print(f"Claude (OpenRouter) config: model={llm_model}...")
+            return ModelFactory.create(
+                model_platform=ModelPlatformType.OPENAI,
+                model_type=llm_model,
+                api_params={"api_base": openrouter_base},
+            )
+        else:
+            raise ValueError("No LLM API key. Set ANTHROPIC_API_KEY or OPENROUTER_API_KEY in .env")
     
     def _get_active_agents_for_round(
         self, 
