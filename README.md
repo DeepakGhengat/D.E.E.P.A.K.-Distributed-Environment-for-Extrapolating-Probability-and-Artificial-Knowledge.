@@ -150,29 +150,32 @@ cp .env.example .env
 
 Edit `.env` with your keys (choose **one** LLM provider):
 
-**Option A: Anthropic API (direct, recommended)**
-```env
-ANTHROPIC_API_KEY=sk-ant-...
-CLAUDE_MODEL_NAME=claude-sonnet-4-20250514
-ZEP_API_KEY=your_zep_api_key
-```
-
-**Option B: OpenRouter (access Claude + other models)**
+**Option A: OpenRouter (recommended — access any model)**
 ```env
 OPENROUTER_API_KEY=sk-or-...
-CLAUDE_MODEL_NAME=anthropic/claude-sonnet-4-20250514
+LLM_MODEL_NAME=qwen/qwen3.5-122b-a10b
 ZEP_API_KEY=your_zep_api_key
 ```
 
-> If both keys are set, Anthropic takes priority. OpenRouter is a great fallback if you don't have a direct Anthropic API key.
+**Option B: Anthropic API (direct Claude access)**
+```env
+ANTHROPIC_API_KEY=sk-ant-...
+LLM_MODEL_NAME=claude-sonnet-4-20250514
+ZEP_API_KEY=your_zep_api_key
+```
 
-#### Choosing a Claude Model
+> If both keys are set, Anthropic takes priority.
 
-| Model | Anthropic ID | OpenRouter ID | Best For |
-|-------|-------------|---------------|----------|
-| **Sonnet 4** | `claude-sonnet-4-20250514` | `anthropic/claude-sonnet-4-20250514` | Default — balanced speed + intelligence |
-| **Opus 4** | `claude-opus-4-20250514` | `anthropic/claude-opus-4-20250514` | Maximum reasoning for complex scenarios |
-| **Haiku 4.5** | `claude-haiku-4-5-20251001` | `anthropic/claude-haiku-4-5-20251001` | Fastest, most cost-effective |
+#### Supported Models
+
+| Model | Provider | Model ID | Best For |
+|-------|----------|----------|----------|
+| **Qwen 3.5 122B** | OpenRouter | `qwen/qwen3.5-122b-a10b` | Default — fast, powerful, cost-effective |
+| **Claude Sonnet 4** | Anthropic / OpenRouter | `claude-sonnet-4-20250514` | Balanced speed + intelligence |
+| **Claude Opus 4** | Anthropic / OpenRouter | `claude-opus-4-20250514` | Maximum reasoning |
+| **Claude Haiku 4.5** | Anthropic / OpenRouter | `claude-haiku-4-5-20251001` | Fastest, lowest cost |
+| **Gemini 2.5 Pro** | OpenRouter | `google/gemini-2.5-pro` | Strong multi-modal reasoning |
+| **Llama 4 Maverick** | OpenRouter | `meta-llama/llama-4-maverick` | Open-source powerhouse |
 
 ### 2. Install Dependencies
 
@@ -296,19 +299,19 @@ The OASIS simulation engine uses CAMEL-AI, which supports both providers:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | One of these | Direct Anthropic API key ([console.anthropic.com](https://console.anthropic.com/)) |
-| `OPENROUTER_API_KEY` | is required | OpenRouter API key ([openrouter.ai/keys](https://openrouter.ai/keys)) |
+| `OPENROUTER_API_KEY` | One of these | OpenRouter API key ([openrouter.ai/keys](https://openrouter.ai/keys)) |
+| `ANTHROPIC_API_KEY` | is required | Direct Anthropic API key ([console.anthropic.com](https://console.anthropic.com/)) |
+| `LLM_MODEL_NAME` | No | Model to use (default: `qwen/qwen3.5-122b-a10b` for OpenRouter, `claude-sonnet-4-20250514` for Anthropic) |
 | `OPENROUTER_BASE_URL` | No | OpenRouter base URL (default: `https://openrouter.ai/api/v1`) |
-| `CLAUDE_MODEL_NAME` | No | Claude model to use (default: `claude-sonnet-4-20250514`) |
 | `ZEP_API_KEY` | Yes | Zep Cloud API key for knowledge graph memory |
 | `ANTHROPIC_BOOST_API_KEY` | No | Secondary key for parallel simulation throughput |
-| `CLAUDE_BOOST_MODEL_NAME` | No | Model for boost config (e.g., `claude-haiku-4-5-20251001`) |
+| `LLM_BOOST_MODEL_NAME` | No | Model for boost config |
 
 ---
 
 ## Tech Stack
 
-- **AI Engine:** Claude (Sonnet 4 / Opus 4 / Haiku 4.5) via Anthropic SDK or OpenRouter
+- **AI Engine:** Qwen 3.5 / Claude / any OpenRouter model via Anthropic SDK or OpenRouter
 - **Simulation:** CAMEL-AI + OASIS with Anthropic/OpenRouter auto-detection
 - **Backend:** Python 3.11+ / Flask / Zep Cloud
 - **Frontend:** Vue 3 / Vite / D3.js (graph visualization) / Axios
@@ -318,18 +321,18 @@ The OASIS simulation engine uses CAMEL-AI, which supports both providers:
 
 ## Getting Your API Key
 
-### Option A: Anthropic (Recommended)
-1. Go to [console.anthropic.com](https://console.anthropic.com/)
-2. Sign up or log in → **API Keys** → **Create Key**
-3. Copy the key (starts with `sk-ant-`) into `.env` as `ANTHROPIC_API_KEY=sk-ant-...`
-
-### Option B: OpenRouter
+### Option A: OpenRouter (Recommended)
 1. Go to [openrouter.ai/keys](https://openrouter.ai/keys)
 2. Sign up or log in → **Create Key**
-3. Copy the key (starts with `sk-or-`) into `.env` as `OPENROUTER_API_KEY=sk-or-...`
-4. Use `anthropic/claude-sonnet-4-20250514` as the model name
+3. Copy the key into `.env` as `OPENROUTER_API_KEY=sk-or-...`
+4. Default model: `qwen/qwen3.5-122b-a10b` (or choose any model from OpenRouter's catalog)
 
-OpenRouter gives you access to Claude plus hundreds of other models through a single API key, and offers free credits for new accounts.
+OpenRouter gives you access to hundreds of models (Qwen, Claude, Gemini, Llama, etc.) through a single API key, and offers free credits for new accounts.
+
+### Option B: Anthropic (Direct Claude access)
+1. Go to [console.anthropic.com](https://console.anthropic.com/)
+2. Sign up or log in → **API Keys** → **Create Key**
+3. Copy the key into `.env` as `ANTHROPIC_API_KEY=sk-ant-...`
 
 ---
 

@@ -30,10 +30,13 @@ class Config:
     ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
     OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
-    # Determine active provider
+    # Determine active provider and default model
     LLM_PROVIDER = 'anthropic' if ANTHROPIC_API_KEY else ('openrouter' if OPENROUTER_API_KEY else None)
     LLM_API_KEY = ANTHROPIC_API_KEY or OPENROUTER_API_KEY
-    LLM_MODEL_NAME = os.environ.get('CLAUDE_MODEL_NAME', 'claude-sonnet-4-20250514')
+
+    # Model name: check LLM_MODEL_NAME first, then legacy CLAUDE_MODEL_NAME
+    _default_model = 'claude-sonnet-4-20250514' if ANTHROPIC_API_KEY else 'qwen/qwen3.5-122b-a10b'
+    LLM_MODEL_NAME = os.environ.get('LLM_MODEL_NAME') or os.environ.get('CLAUDE_MODEL_NAME', _default_model)
 
     # OpenRouter base URL
     OPENROUTER_BASE_URL = os.environ.get('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1')

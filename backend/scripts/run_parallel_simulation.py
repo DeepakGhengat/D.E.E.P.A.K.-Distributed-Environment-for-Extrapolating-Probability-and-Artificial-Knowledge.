@@ -987,8 +987,8 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
     Create LLM model.
 
     Supports dual LLM configuration for speeding up parallel simulations:
-    - Primary config: ANTHROPIC_API_KEY, CLAUDE_MODEL_NAME
-    - Boost config (optional): ANTHROPIC_BOOST_API_KEY, CLAUDE_BOOST_MODEL_NAME
+    - Primary config: ANTHROPIC_API_KEY or OPENROUTER_API_KEY, LLM_MODEL_NAME
+    - Boost config (optional): ANTHROPIC_BOOST_API_KEY, LLM_BOOST_MODEL_NAME
 
     If boost LLM is configured, parallel simulations can use different API providers for different platforms, improving concurrency.
 
@@ -998,18 +998,21 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
     """
     # Check for boost config
     boost_api_key = os.environ.get("ANTHROPIC_BOOST_API_KEY", "")
-    boost_model = os.environ.get("CLAUDE_BOOST_MODEL_NAME", "")
+    boost_model = os.environ.get("LLM_BOOST_MODEL_NAME") or os.environ.get("CLAUDE_BOOST_MODEL_NAME", "")
     has_boost_config = bool(boost_api_key)
+
+    # Resolve model name
+    default_model = os.environ.get("LLM_MODEL_NAME") or os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
 
     # Select primary or boost config
     if use_boost and has_boost_config:
         llm_api_key = boost_api_key
-        llm_model = boost_model or os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
+        llm_model = boost_model or default_model
         config_label = "[Boost]"
     else:
         # Try Anthropic first, then OpenRouter
         llm_api_key = os.environ.get("ANTHROPIC_API_KEY", "") or os.environ.get("OPENROUTER_API_KEY", "")
-        llm_model = os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
+        llm_model = default_model
         config_label = "[Primary]"
 
     if not llm_model:

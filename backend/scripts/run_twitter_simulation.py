@@ -433,7 +433,7 @@ class TwitterSimulationRunner:
         """
         anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
         openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
-        llm_model = os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
+        llm_model = os.environ.get("LLM_MODEL_NAME") or os.environ.get("CLAUDE_MODEL_NAME", "claude-sonnet-4-20250514")
 
         if not llm_model:
             llm_model = self.config.get("llm_model", "claude-sonnet-4-20250514")
