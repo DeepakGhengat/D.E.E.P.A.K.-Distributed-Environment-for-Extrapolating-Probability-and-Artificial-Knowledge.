@@ -196,7 +196,7 @@ class OasisProfileGenerator:
 
         self.client = anthropic.Anthropic(api_key=self.api_key)
         
-        # Zep客户端用于检索丰富上下文
+        # Zep client for retrieving rich context
         self.zep_api_key = zep_api_key or Config.ZEP_API_KEY
         self.zep_client = None
         self.graph_id = graph_id
@@ -532,7 +532,7 @@ class OasisProfileGenerator:
                         {"role": "user", "content": prompt}
                     ],
                     max_tokens=4096,
-                    temperature=0.7 - (attempt * 0.1)  # 每次重试降低温度
+                    temperature=0.7 - (attempt * 0.1)  # Lower temperature on each retry
                 )
 
                 content = response.content[0].text
@@ -645,7 +645,7 @@ class OasisProfileGenerator:
         
         # 6. Try to extract partial information from content
         bio_match = re.search(r'"bio"\s*:\s*"([^"]*)"', content)
-        persona_match = re.search(r'"persona"\s*:\s*"([^"]*)', content)  # 可能被截断
+        persona_match = re.search(r'"persona"\s*:\s*"([^"]*)', content)  # May be truncated
         
         bio = bio_match.group(1) if bio_match else (entity_summary[:200] if entity_summary else f"{entity_type}: {entity_name}")
         persona = persona_match.group(1) if persona_match else (entity_summary or f"{entity_name} is a {entity_type}.")
@@ -829,7 +829,7 @@ Important:
             }
         
         else:
-            # 默认人设
+            # Default persona
             return {
                 "bio": entity_summary[:150] if entity_summary else f"{entity_type}: {entity_name}",
                 "persona": entity_summary or f"{entity_name} is a {entity_type.lower()} participating in social discussions.",
@@ -896,12 +896,12 @@ Important:
                 
                 try:
                     if output_platform == "reddit":
-                        # Reddit JSON 格式
+                        # Reddit JSON format
                         profiles_data = [p.to_reddit_format() for p in existing_profiles]
                         with open(realtime_output_path, 'w', encoding='utf-8') as f:
                             json.dump(profiles_data, f, ensure_ascii=False, indent=2)
                     else:
-                        # Twitter CSV 格式
+                        # Twitter CSV format
                         import csv
                         profiles_data = [p.to_twitter_format() for p in existing_profiles]
                         if profiles_data:
@@ -948,7 +948,7 @@ Important:
         print(f"Starting Agent persona generation - {total} entities, parallel count: {parallel_count}")
         print(f"{'='*60}\n")
         
-        # 使用线程池并行执行
+        # Use thread pool for parallel execution
         with concurrent.futures.ThreadPoolExecutor(max_workers=parallel_count) as executor:
             # Submit all tasks
             future_to_entity = {
@@ -1015,7 +1015,7 @@ Important:
         
         output_lines = [
             f"\n{separator}",
-            f"[已生成] {entity_name} ({entity_type})",
+            f"[Generated] {entity_name} ({entity_type})",
             f"{separator}",
             f"Username: {profile.user_name}",
             f"",

@@ -447,7 +447,7 @@ class SimulationConfigGenerator:
                         {"role": "user", "content": prompt}
                     ],
                     max_tokens=4096,
-                    temperature=0.7 - (attempt * 0.1)  # 每次重试降低温度
+                    temperature=0.7 - (attempt * 0.1)  # Lower temperature on each retry
                 )
 
                 content = response.content[0].text
@@ -802,7 +802,7 @@ Return JSON format (no markdown):
                 "poster_agent_id": matched_agent_id
             })
             
-            logger.info(f"初始帖子分配: poster_type='{poster_type}' -> agent_id={matched_agent_id}")
+            logger.info(f"Initial post assignment: poster_type='{poster_type}' -> agent_id={matched_agent_id}")
         
         event_config.initial_posts = updated_posts
         return event_config
