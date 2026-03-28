@@ -552,23 +552,23 @@ const parseInsightForge = (text) => {
   
   try {
     // Extract analysis question
-    const queryMatch = text.match(/分析问题:\s*(.+?)(?:\n|$)/)
+    const queryMatch = text.match(/Analysis Question:\s*(.+?)(?:\n|$)/)
     if (queryMatch) result.query = queryMatch[1].trim()
-    
+
     // Extract prediction scenario
-    const reqMatch = text.match(/预测场景:\s*(.+?)(?:\n|$)/)
+    const reqMatch = text.match(/Prediction Scenario:\s*(.+?)(?:\n|$)/)
     if (reqMatch) result.simulationRequirement = reqMatch[1].trim()
-    
-    // Extract statistics - match "相关预测事实: X条" format
-    const factMatch = text.match(/相关预测事实:\s*(\d+)/)
-    const entityMatch = text.match(/涉及实体:\s*(\d+)/)
-    const relMatch = text.match(/关系链:\s*(\d+)/)
+
+    // Extract statistics - match "Related Prediction Facts: X" format
+    const factMatch = text.match(/Related Prediction Facts:\s*(\d+)/)
+    const entityMatch = text.match(/Involved Entities:\s*(\d+)/)
+    const relMatch = text.match(/Relation Chains:\s*(\d+)/)
     if (factMatch) result.stats.facts = parseInt(factMatch[1])
     if (entityMatch) result.stats.entities = parseInt(entityMatch[1])
     if (relMatch) result.stats.relationships = parseInt(relMatch[1])
     
     // Extract sub-questions - extract all, no limit
-    const subQSection = text.match(/### 分析的子问题\n([\s\S]*?)(?=\n###|$)/)
+    const subQSection = text.match(/### Analyzed Sub-questions\n([\s\S]*?)(?=\n###|$)/)
     if (subQSection) {
       const lines = subQSection[1].split('\n').filter(l => l.match(/^\d+\./))
       result.subQueries = lines.map(l => l.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)
